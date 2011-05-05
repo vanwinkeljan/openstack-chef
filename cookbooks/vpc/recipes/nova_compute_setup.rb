@@ -1,14 +1,6 @@
 # This recipe contains setup steps required for Nova Compute to work
 # correctly on our Stock Ubuntu Cloud Servers images
 
-# NOTE: (dprince) Inside of our VPC environments we already have a virbr0
-# bridge interface so we can use that
-
-#package "bridge-utils"
-#execute "brctl addbr br100" do
-  #not_if "brctl show | grep br100"
-#end
-
 directory "/dev/cgroup" do
   owner "root"
   group "root"

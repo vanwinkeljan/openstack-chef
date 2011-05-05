@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: Rackspace
-# Recipe:: packages
+# Cookbook Name:: apt
+# Recipe:: noauth
 #
-# Copyright 2011, Rackspace
+# Copyright 2011, Dan Prince
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-include_recipe 'apt'
-
-apt_repository "openstack" do
-  key "2A2356C9"
-  keyserver "keyserver.ubuntu.com"
-  uri "http://ppa.launchpad.net/nova-core/trunk/ubuntu"
-  distribution node[:apt][:distro]
-  components(["main"])
-  action :add
+cookbook_file "/etc/apt/apt.conf.d/02noauth" do
+  source "apt-noauth.conf"
+  owner "root"
+  group "root"
+  mode 0644
 end

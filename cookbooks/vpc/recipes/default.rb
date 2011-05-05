@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: rackspace
+# Cookbook Name:: vpc
 # Recipe:: default
 #
 # Copyright 2011, Rackspace
