@@ -1,4 +1,5 @@
-default[:glance][:config_file]="/etc/glance/glance.conf"
+default[:glance][:api_config_file]="/etc/glance/glance-api.conf"
+default[:glance][:registry_config_file]="/etc/glance/glance-registry.conf"
 default[:glance][:log_dir]="/var/log/glance"
 default[:glance][:working_directory]="/var/lib/glance"
 default[:glance][:pid_directory]="/var/run/glance/"
