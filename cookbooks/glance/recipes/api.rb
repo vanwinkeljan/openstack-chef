@@ -13,4 +13,11 @@ template node[:glance][:api_config_file] do
   mode 0644
 end
 
+file "/var/log/glance/api.log" do
+  owner "glance"
+  group "root"
+  mode "0644"
+  action :create
+end
+
 glance_service "api"
