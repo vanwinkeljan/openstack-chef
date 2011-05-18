@@ -19,10 +19,3 @@ end
   end
 
 end
-
-#template node[:glance][:config_file] do
-#  source "glance.conf.erb"
-#  owner "glance"
-#  group "root"
-#  mode 0644
-#end
