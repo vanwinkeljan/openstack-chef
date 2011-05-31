@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-"bzr python-virtualenv python-dev swig python-m2crypto pep8".each(" ") do |pkg|
-	package pkg.chomp(" ")
+%w{bzr python-virtualenv python-dev swig python-m2crypto pep8 screen}.each do |pkg|
+  package pkg
 end
 
 group node[:vpc][:dev_setup][:group] do
