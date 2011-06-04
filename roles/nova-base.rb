@@ -2,6 +2,7 @@ name "nova-base"
 
 run_list(
 	"recipe[apt::noauth]",
+	"recipe[vpc::my_ip]",
 	"recipe[vpc::apt_config]",
     "recipe[nova::common]"
 )
