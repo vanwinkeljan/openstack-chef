@@ -9,7 +9,7 @@ run_list(
 
 default_attributes(
 	"nova" => {
-		"public_interface" => "tun0",
+		"public_interface" => "tap0",
 		"libvirt_type" => "qemu",
 		"creds" => {
 		"user" => "stacker",
@@ -21,8 +21,10 @@ default_attributes(
 		"glance_host" => "glance1",
 		"flat_interface" => "tap0",
 		"flat_network_bridge" => "xenbr0",
-		"flat_network_dhcp_start" => "172.19.1.2",
-		"network" => "172.19.1.0/24 1 256",
+		"flat_network_dhcp_start" => "192.168.0.2",
+		"fixed_range" => "192.168.0.0/24",
+		"floating_range" => "172.20.0.0/24",
+		"network" => "192.168.0.0/24 1 256",
 		"image_service" => "nova.image.glance.GlanceImageService",
 		"images" => ["http://images.ansolabs.com/tty.tgz"]
 	}
