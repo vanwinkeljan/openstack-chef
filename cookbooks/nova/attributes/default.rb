@@ -19,7 +19,7 @@
 
 ::Chef::Node.send(:include, Opscode::OpenSSL::Password)
 
-default[:nova][:hostname] = "nova"
+default[:nova][:hostname] = hostname
 default[:nova][:install_type] = "binary"
 default[:nova][:compute_connection_type] = "qemu"
 default[:nova][:creds][:user] = "nova"
