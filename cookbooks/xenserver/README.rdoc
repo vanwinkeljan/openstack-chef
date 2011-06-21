@@ -1,0 +1,44 @@
+= DESCRIPTION:
+Cookbooks to configure XenServer for use with Openstack Nova.
+Includes recipes to create configure domU instances, configure the SR,
+install nova plugins, and add a host licenses.
+
+= REQUIREMENTS:
+
+-XenServer 5.6 FP1/SP2
+
+-A suitable Xen xva image to be used when creating domU instances.
+ The instance should have the apppropriate Openstack Guest Agent
+ preinstalled to support configuration of network and file injection (optional).
+
+= ATTRIBUTES: 
+
+- See attributes/xenserver.rb.
+
+= USAGE:
+
+Example attributes in JSON:
+
+	"xenserver": {
+		"instances": [
+			{
+			"hostname": "compute1.vpc",
+			"ip_address": "172.19.0.101",
+			"netmask": "255.255.224.0",
+			"broadcast": "172.19.31.255",
+			"dns_nameservers": "172.19.0.1",
+			"gateway": "172.19.0.1",
+			"mac": "00:00:00:ab:c1:23",
+			"inject_dom0_authorized_keys": "true"
+			}
+		],
+		"b64_license_data": "AABBCCDD...="
+	}
+
+Example runlist:
+
+	"run_list": [
+         "recipe[xenserver::xapi]",
+         "recipe[xenserver::create_instances]"
+         "recipe[xenserver::license_config]"
+	]
