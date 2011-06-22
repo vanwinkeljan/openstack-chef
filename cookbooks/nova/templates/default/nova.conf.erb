@@ -19,7 +19,7 @@
 --network_manager=<%= node[:nova][:network_manager] %>
 --default_project=<%= node[:nova][:default_project] %>
 <% if node[:nova][:flat_network_bridge] %>--flat_network_bridge=<%= node[:nova][:flat_network_bridge] %><% end %>
-<% if node[:nova][:flat_interface] %>--flat_interface=<%= node[:nova][:flat_interface] %><% end %>
+<% if node[:nova][:flat_interface] and not node[:nova][:flat_interface].empty? %>--flat_interface=<%= node[:nova][:flat_interface] %><% end %>
 <% if node[:nova][:flat_network_dhcp_start] %>--flat_network_dhcp_start=<%= node[:nova][:flat_network_dhcp_start] %><% end %>
 <% if node[:nova][:fixed_range] %>--fixed_range=<%= node[:nova][:fixed_range] %><% end %>
 --glance_api_servers=<%= node[:nova][:glance_host] %>:<%= node[:nova][:glance_port] %>
@@ -27,3 +27,11 @@
 --lock_path=<%= node[:nova][:lock_path] %>
 --sql_idle_timeout=<%= node[:nova][:db][:sql_idle_timeout] %>
 --use_ipv6=<%= node[:nova][:use_ipv6] %>
+<% if node[:nova][:connection_type] %>--connection_type=<%= node[:nova][:connection_type] %><% end %>
+<% if node[:nova][:xenapi_connection_url] %>--xenapi_connection_url=<%= node[:nova][:xenapi_connection_url] %><% end %>
+<% if node[:nova][:xenapi_connection_username] %>--xenapi_connection_username=<%= node[:nova][:xenapi_connection_username] %><% end %>
+<% if node[:nova][:xenapi_connection_password] %>--xenapi_connection_password=<%= node[:nova][:xenapi_connection_password] %><% end %>
+<% if node[:nova][:rescue_timeout] %>--rescue_timeout=<%= node[:nova][:rescue_timeout] %><% end %>
+<% if node[:nova][:allow_admin_api] %>--allow_admin_api=<%= node[:nova][:allow_admin_api] %><% end %>
+<% if node[:nova][:xenapi_remap_vbd_dev] %>--xenapi_remap_vbd_dev=<%= node[:nova][:xenapi_remap_vbd_dev] %><% end %>
+<% if node[:nova][:block_device_creation_timeout] %>--block_device_creation_timeout=<%= node[:nova][:block_device_creation_timeout] %><% end %>
