@@ -26,23 +26,20 @@
 #other-config:i18n-original-value-name_label="slices"
 
 sr_name_label = node[:xenserver][:sr_name_label]
-sr_uuid=%x{xe sr-list name-label="#{sr_name_label}" | grep uuid | sed -e 's|.*: ||'}.chomp
-raise "Unable to find SR uuid." if sr_uuid.blank?
 
+# NOTE: By default XenServer 5.6 SP2 automatically has the i18n configs set
+# for the 'Local storage' SR.
 bash "configure SR i18n keys" do
   user "root"
   code <<-EOH
-	xe sr-param-set uuid=#{sr_uuid} other-config:i18n-key=local-storage
-	xe sr-param-set uuid=#{sr_uuid} other-config:i18n-original-value-name_label="#{sr_name_label}"
+	UUID=$(xe sr-list name-label="#{sr_name_label}" | grep uuid | sed -e 's|.*: ||')
+	[ -n "$UUID" ] || exit 1
+	xe sr-param-set uuid=$UUID other-config:i18n-key=local-storage
+	xe sr-param-set uuid=$UUID other-config:i18n-original-value-name_label="#{sr_name_label}"
+	SR_MOUNT="/var/run/sr-mount/$UUID/images"
+	mkdir -p "$SR_MOUNT" &> /dev/null
+	[ -h "$SR_MOUNT" ] || ln -s "$SR_MOUNT" /images
   EOH
-  not_if "xe sr-param-list uuid=#{sr_uuid} | grep local-storage"
-end
-
-sr_mount_images_dir="/var/run/sr-mount/#{sr_uuid}/images"
-directory sr_mount_images_dir do
-  action :create
-end
-
-link "/images" do
-  to sr_mount_images_dir
+  not_if do File.exists?("/images") end
+  #not_if "UUID=$(xe sr-list name-label='#{sr_name_label}' | grep uuid | sed -e 's|.*: ||'); ls /var/run/sr-mount/$UUID/images && ls /images"
 end
