@@ -9,7 +9,6 @@ run_list(
 
 default_attributes(
 	"nova" => {
-		"public_interface" => "tap0",
 		"libvirt_type" => "qemu",
 		"creds" => {
 		"user" => "stacker",
@@ -19,7 +18,6 @@ default_attributes(
 		"network_manager" => "nova.network.manager.FlatDHCPManager",
 		"default_project" => "admin",
 		"glance_host" => "glance1",
-		"flat_interface" => "tap0",
 		"flat_network_bridge" => "xenbr0",
 		"flat_network_dhcp_start" => "192.168.0.2",
 		"fixed_range" => "192.168.0.0/24",
