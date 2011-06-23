@@ -20,9 +20,6 @@
 
 include_recipe "apt"
 
-package "euca2ools"
-package "curl"
-
 execute "nova-manage db sync" do
   user "nova"
 end
@@ -45,13 +42,6 @@ end
 execute "nova-manage floating create #{node[:nova][:hostname]} #{node[:nova][:floating_range]}" do
   user 'nova'
   not_if { File.exists?("/var/lib/nova/setup") }
-end
-
-(node[:nova][:images] or []).each do |image|
-  execute "curl #{image} | tar xvz -C /var/lib/nova/images" do
-    user 'nova'
-    not_if { File.exists?("/var/lib/nova/setup") }
-  end
 end
 
 execute "touch /var/lib/nova/setup"
