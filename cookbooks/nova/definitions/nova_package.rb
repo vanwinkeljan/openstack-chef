@@ -1,9 +1,11 @@
 define :nova_package do
 
   nova_name="nova-#{params[:name]}"
+  package_version = node['nova']["#{params[:name]}_version"]
   package nova_name do
     options "--force-yes"
     action :install
+    version package_version if package_version
   end
 
   service nova_name do

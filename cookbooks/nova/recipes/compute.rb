@@ -5,9 +5,12 @@
 
 include_recipe "nova::common"
 
+package_version = node['nova']["compute_version"]
+
 package "nova-compute" do
   options "--force-yes"
   action :install
+  version package_version if package_version
 end
 
 template "/etc/init/nova-compute.conf" do
