@@ -22,7 +22,7 @@ default_attributes(
 		"flat_network_dhcp_start" => "192.168.0.2",
 		"fixed_range" => "192.168.0.0/24",
 		"floating_range" => "172.20.0.0/24",
-		"network" => "192.168.0.0/24 1 256",
+		"network" => "192.168.0.0/24 1 254",
 		"image_service" => "nova.image.glance.GlanceImageService",
 		"images" => ["http://images.ansolabs.com/tty.tgz"]
 	}
