@@ -19,7 +19,6 @@
 --network_manager=<%= node[:nova][:network_manager] %>
 --default_project=<%= node[:nova][:default_project] %>
 <% if node[:nova][:flat_network_bridge] %>--flat_network_bridge=<%= node[:nova][:flat_network_bridge] %><% end %>
-<% if node[:nova][:bridge_interface] %>--bridge_interface=<%= node[:nova][:bridge_interface] %><% end %>
 <% if node[:nova][:flat_interface] and not node[:nova][:flat_interface].empty? %>--flat_interface=<%= node[:nova][:flat_interface] %><% end %>
 <% if node[:nova][:flat_network_dhcp_start] %>--flat_network_dhcp_start=<%= node[:nova][:flat_network_dhcp_start] %><% end %>
 <% if node[:nova][:fixed_range] %>--fixed_range=<%= node[:nova][:fixed_range] %><% end %>
