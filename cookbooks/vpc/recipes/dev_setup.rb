@@ -45,12 +45,3 @@ execute "bzr checkout lp:nova #{node[:vpc][:dev_setup][:dir]}/nova" do
   user node[:vpc][:dev_setup][:user]
   not_if do File.exists?("#{node[:vpc][:dev_setup][:dir]}/nova") end
 end
-
-package "uml-utilities" do
-  options "--force-yes"
-  action :install
-end
-
-execute "tunctl -t tap0" do
-  action :run
-end
