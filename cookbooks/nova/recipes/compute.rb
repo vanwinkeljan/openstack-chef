@@ -31,7 +31,7 @@ if node[:nova][:connection_type] and node[:nova][:connection_type] == "xenapi" t
     action :install
   end
 
-  execute "tunctl -t tun0" do
+  execute "tunctl -t tap0" do
     action:run
   end
 
