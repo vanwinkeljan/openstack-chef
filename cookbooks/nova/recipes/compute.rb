@@ -26,16 +26,6 @@ if node[:nova][:connection_type] and node[:nova][:connection_type] == "xenapi" t
     not_if "python -c 'import XenAPI'"
   end
 
-  # FIXME: routing magic needs this tap interface, is this a hack? seems like it
-  package "uml-utilities" do
-    options "--force-yes"
-    action :install
-  end
-
-  execute "tunctl -t tap0" do
-    action :run
-  end
-
 elsif node[:nova][:connection_type] and node[:nova][:connection_type] == "kvm" then
 
   service "libvirt-bin" do
