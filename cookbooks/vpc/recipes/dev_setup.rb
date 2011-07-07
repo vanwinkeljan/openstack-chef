@@ -45,3 +45,7 @@ execute "bzr checkout lp:nova #{node[:vpc][:dev_setup][:dir]}/nova" do
   user node[:vpc][:dev_setup][:user]
   not_if do File.exists?("#{node[:vpc][:dev_setup][:dir]}/nova") end
 end
+
+execute "echo 'source #{node[:vpc][:dev_setup][:dir]}/novarc' >> #{node[:vpc][:dev_setup][:dir]}/.bashrc" do
+  user node[:vpc][:dev_setup][:user]
+end
