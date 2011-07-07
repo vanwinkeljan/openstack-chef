@@ -29,30 +29,10 @@ directory node[:yum][:repo_base_directory] do
 end
 
 bash "createrepo" do
-  action :nothing
-  cwd "/tmp"
+  cwd node[:yum][:repo_base_directory]
   user "root"
   code <<-EOH
-    cd #{node[:yum][:repo_base_directory]}
+    mv #{node[:yum][:upload_packages_dir]}/*.rpm .
     createrepo .
   EOH
-end
-
-if node[:yum][:upload_package_dir] then
-  rbfiles = File.join(node[:yum][:upload_package_dir], "*.rpm")
-
-  Dir.glob(rbfiles).each do |rpm|
-
-    bash "add RPM: #{rpm}" do
-      cwd "/tmp"
-      user "root"
-      code <<-EOH
-        cd #{node[:yum][:repo_base_directory]}
-        mv #{rbfiles} .
-      EOH
-      notifies :run, resources(:bash => "createrepo")
-    end
-
-  end
-
 end
