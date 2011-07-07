@@ -5,7 +5,7 @@
 --verbose
 --my_ip=<%= node[:nova][:my_ip] %>
 --public_interface=<%= node[:nova][:public_interface] %>
----vlan_interface=<%= node[:nova][:vlan_interface] %>
+--vlan_interface=<%= node[:nova][:vlan_interface] %>
 --iscsi_ip_prefix=<%= node[:nova][:my_ip].split('.')[0..2].join('.') %>
 <% if @sql_connection %>--sql_connection=<%= @sql_connection %><% end %>
 <% if node[:nova][:libvirt_type] %>--libvirt_type=<%= node[:nova][:libvirt_type] %><% end %>
