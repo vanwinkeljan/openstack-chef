@@ -26,6 +26,15 @@ if node[:nova][:connection_type] and node[:nova][:connection_type] == "xenapi" t
     not_if "python -c 'import XenAPI'"
   end
 
+  package "uml-utilities" do
+    options "--force-yes"
+    action :install
+  end
+
+  execute "tunctl -t tun0" do
+    action:run
+  end
+
 elsif node[:nova][:connection_type] and node[:nova][:connection_type] == "kvm" then
 
   service "libvirt-bin" do
