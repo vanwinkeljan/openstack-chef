@@ -1,0 +1,29 @@
+{
+  "recommendations": {
+  },
+  "platforms": {
+  },
+  "license": "All rights reserved",
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "recipes": {
+  },
+  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES: \n\n= USAGE:\n\n",
+  "description": "Installs/Configures nginx",
+  "version": "0.1.0",
+  "providing": {
+  },
+  "maintainer": "",
+  "attributes": {
+  },
+  "replacing": {
+  },
+  "name": "nginx",
+  "dependencies": {
+  },
+  "maintainer_email": "",
+  "groupings": {
+  }
+}
