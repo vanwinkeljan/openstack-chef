@@ -49,3 +49,8 @@ execute "unzip /var/lib/nova/nova.zip -d #{node[:nova][:creds][:dir]}/" do
   group node[:nova][:creds][:group]
   not_if { File.exists?("#{node[:nova][:creds][:dir]}/novarc") }
 end
+
+execute "echo \"source #{node[:nova][:creds][:dir]}/novarc\" >> /etc/bash.bashrc" do
+  user "root"
+  not_if "grep #{node[:nova][:creds][:dir]}/novarc /etc/bash.bashrc"
+end
