@@ -52,4 +52,5 @@ end
 
 execute "echo \"source #{node[:nova][:creds][:dir]}/novarc\" >> /etc/bash.bashrc" do
   user "root"
+  not_if "grep #{node[:nova][:creds][:dir]}/novarc /etc/bash.bashrc"
 end
