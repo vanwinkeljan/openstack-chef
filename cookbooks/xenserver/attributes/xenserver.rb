@@ -3,5 +3,4 @@ default[:xenserver][:image_path] = "/root/maverick_agent.xva"
 default[:xenserver][:license_filename] = "/root/.xenserver_license.txt"
 default[:xenserver][:sr_name_label] = "Local storage"
 
-#XenServer plugins (FIXME: use an RPM to deploy plugins to dom0)
-default[:xenserver][:plugins][:url] = "http://172.19.0.1/plugins.tar.gz"
+default[:xenserver][:plugins][:repo] = "http://172.19.0.1/rpms"
