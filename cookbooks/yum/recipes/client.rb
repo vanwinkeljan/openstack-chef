@@ -14,7 +14,7 @@ ruby_block "wait_till_repo_loaded" do
 		until repo_loaded == true do
 
 			begin
-			if Net::HTTP.get_response(URI.parse("#{node[:yum][:repo_url]}/repo_loaded.txt")).class == Net::HTTPOK
+			if Net::HTTP.get_response(URI.parse("#{node[:yum][:repo_url]}/repodata/repomd.xml")).class == Net::HTTPOK
 				repo_loaded=true
 				Chef::Log.info("Yum repo is online.")
 			else
@@ -36,4 +36,8 @@ template "/etc/yum.repos.d/#{node[:yum][:repo]}.repo" do
   mode 0440
   owner "root"
   group "root"
+end
+
+package "openstack-xen-plugins" do
+    action :install
 end
