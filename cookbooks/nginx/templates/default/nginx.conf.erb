@@ -7,7 +7,7 @@ server {
 
   location / {
 root /var/packages;
-index index.html;
+autoindex on;
   }
 
   location ~ /(.*)/conf {
