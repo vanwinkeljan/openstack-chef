@@ -5,7 +5,7 @@ run_list(
 )
 
 default_attributes(
-	"apt" => {
+	"yum" => {
 		"repo_base_directory" => "/var/packages/rpms",
 		"upload_packages_dir" => "/root/openstack-rpms"
 	}
