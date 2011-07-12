@@ -1,14 +1,64 @@
---dhcpbridge_flagfile=/etc/nova/nova.conf
---dhcpbridge=/usr/bin/nova-dhcpbridge
---logdir=/var/log/nova
---state_path=/var/lib/nova
---verbose
---my_ip=<%= node[:nova][:my_ip] %>
---public_interface=<%= node[:nova][:public_interface] %>
---vlan_interface=<%= node[:nova][:vlan_interface] %>
---iscsi_ip_prefix=<%= node[:nova][:my_ip].split('.')[0..2].join('.') %>
+<%  
+    def get_boolean_flag(flag)
+        if node[:nova][flag]
+            return "--#{flag}"
+        end
+    end
+
+    def get_flag(flag)
+        if node[:nova][flag] and not node[:nova][flag].empty?
+            return "--#{flag}=#{node[:nova][flag]}"
+        end
+    end
+%>
+<%= get_boolean_flag(:verbose) %>
+<%= get_flag(:dhcpbridge_flagfile) %>
+<%= get_flag(:glance_api_servers) %>
+<%= get_flag(:dhcpbridge) %>
+<%= get_flag(:logdir) %>
+<%= get_flag(:state_path) %>
+<%= get_flag(:my_ip) %>
+<%= get_flag(:public_interface) %>
+<%= get_flag(:vlan_interface) %>
+<%= get_flag(:iscsi_ip_prefix) %>
+<%= get_flag(:libvirt_type) %>
+<%= get_flag(:network_manager) %>
+<%= get_flag(:default_project) %>
+<%= get_flag(:flat_network_bridge) %>
+<%= get_flag(:flat_interface) %>
+<%= get_flag(:flat_injected) %>
+<%= get_flag(:flat_network_dhcp_start) %>
+<%= get_flag(:fixed_range) %>
+<%= get_flag(:image_service) %>
+<%= get_flag(:lock_path) %>
+<%= get_flag(:use_ipv6) %>
+<%= get_flag(:ipv6_backend) %>
+<%= get_flag(:ca_path) %>
+<%= get_flag(:connection_type) %>
+<%= get_flag(:xenapi_connection_url) %>
+<%= get_flag(:xenapi_connection_username) %>
+<%= get_flag(:xenapi_connection_password) %>
+<%= get_flag(:xenapi_inject_image) %>
+<%= get_flag(:xenapi_remap_vdb_dev) %>
+<%= get_flag(:rescue_timeout) %>
+<%= get_flag(:allow_admin_api) %>
+<%= get_flag(:block_device_creation_timeout) %>
+<%= get_flag(:osapi_max_limit) %>
+<%= get_flag(:quota_instances) %>
+<%= get_flag(:quota_cores) %>
+<%= get_flag(:quota_volumes) %>
+<%= get_flag(:quota_gigabytes) %>
+<%= get_flag(:quota_floating_ips) %>
+<%= get_flag(:quota_metadata_items) %>
+<%= get_flag(:quota_max_injected_files) %>
+<%= get_flag(:quota_max_injected_file_content_bytes) %>
+<%= get_flag(:quota_max_injected_file_path_bytes) %>
+<%= get_flag(:quota_ram) %>
+<%= get_flag(:service_down_time) %>
+<%= get_flag(:network_driver) %>
+<%= get_flag(:host) %>
+
 <% if @sql_connection %>--sql_connection=<%= @sql_connection %><% end %>
-<% if node[:nova][:libvirt_type] %>--libvirt_type=<%= node[:nova][:libvirt_type] %><% end %>
 <% if @rabbit_settings %>
 --rabbit_host=<%= @rabbit_settings[:address] %>
 --rabbit_port=<%= @rabbit_settings[:port] %>
@@ -16,22 +66,5 @@
 --rabbit_password=<%= @rabbit_settings[:password] %>
 --rabbit_virtual_host=<%= @rabbit_settings[:vhost] %>
 <% end %>
---network_manager=<%= node[:nova][:network_manager] %>
---default_project=<%= node[:nova][:default_project] %>
-<% if node[:nova][:flat_network_bridge] %>--flat_network_bridge=<%= node[:nova][:flat_network_bridge] %><% end %>
-<% if node[:nova][:flat_interface] and not node[:nova][:flat_interface].empty? %>--flat_interface=<%= node[:nova][:flat_interface] %><% end %>
-<% if node[:nova][:flat_network_dhcp_start] %>--flat_network_dhcp_start=<%= node[:nova][:flat_network_dhcp_start] %><% end %>
-<% if node[:nova][:fixed_range] %>--fixed_range=<%= node[:nova][:fixed_range] %><% end %>
---glance_api_servers=<%= node[:nova][:glance_host] %>:<%= node[:nova][:glance_port] %>
---image_service=<%= node[:nova][:image_service] %>
---lock_path=<%= node[:nova][:lock_path] %>
+
 --sql_idle_timeout=<%= node[:nova][:db][:sql_idle_timeout] %>
---use_ipv6=<%= node[:nova][:use_ipv6] %>
-<% if node[:nova][:connection_type] %>--connection_type=<%= node[:nova][:connection_type] %><% end %>
-<% if node[:nova][:xenapi_connection_url] %>--xenapi_connection_url=<%= node[:nova][:xenapi_connection_url] %><% end %>
-<% if node[:nova][:xenapi_connection_username] %>--xenapi_connection_username=<%= node[:nova][:xenapi_connection_username] %><% end %>
-<% if node[:nova][:xenapi_connection_password] %>--xenapi_connection_password=<%= node[:nova][:xenapi_connection_password] %><% end %>
-<% if node[:nova][:rescue_timeout] %>--rescue_timeout=<%= node[:nova][:rescue_timeout] %><% end %>
-<% if node[:nova][:allow_admin_api] %>--allow_admin_api=<%= node[:nova][:allow_admin_api] %><% end %>
-<% if node[:nova][:xenapi_remap_vbd_dev] %>--xenapi_remap_vbd_dev=<%= node[:nova][:xenapi_remap_vbd_dev] %><% end %>
-<% if node[:nova][:block_device_creation_timeout] %>--block_device_creation_timeout=<%= node[:nova][:block_device_creation_timeout] %><% end %>
