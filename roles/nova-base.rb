@@ -23,6 +23,7 @@ default_attributes(
 		"fixed_range" => "192.168.0.0/24",
 		"floating_range" => "172.20.0.0/24",
 		"network" => "192.168.0.0/24 1 254",
+        "public_network_gateway_ip" => "192.168.0.1/24",
 		"image_service" => "nova.image.glance.GlanceImageService",
 		"images" => ["http://images.ansolabs.com/tty.tgz"]
 	}
