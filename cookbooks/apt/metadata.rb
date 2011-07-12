@@ -6,6 +6,7 @@ version           "0.9.2"
 recipe            "apt", "Runs apt-get update during compile phase and sets up preseed directories"
 recipe            "apt::cacher", "Set up an APT cache"
 recipe            "apt::proxy", "Set up an APT proxy"
+depends           "nginx"
 
 %w{ ubuntu debian }.each do |os|
   supports os

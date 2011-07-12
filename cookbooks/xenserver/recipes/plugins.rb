@@ -16,15 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# FIXME this should use an RPM package to install the plugins in dom0
-bash "install plugins" do
-  user "root"
-  code <<-EOH
-curl #{node[:xenserver][:plugins_url]} | tar xvz -C /etc/xapi.d/plugins"
-chmod a+x /etc/xapi.d/plugins/*
-sed -i -e "s/enabled=0/enabled=1/" /etc/yum.repos.d/CentOS-Base.repo
-  EOH
-  not_if { File.exists?("/etc/xapi.d/plugins/migration") }
+package "openstack-xen-plugins" do
+    action :install
 end
-
-package "parted"
