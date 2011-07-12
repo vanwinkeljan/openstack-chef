@@ -37,7 +37,3 @@ template "/etc/yum.repos.d/#{node[:yum][:repo]}.repo" do
   owner "root"
   group "root"
 end
-
-package "openstack-xen-plugins" do
-    action :install
-end
