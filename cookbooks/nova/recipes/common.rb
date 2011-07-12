@@ -100,3 +100,7 @@ template "/etc/nova/nova.conf" do
     :rabbit_settings => rabbit_settings
   )
 end
+
+execute "sed -i '/^$/d' /etc/nova/nova.conf" do
+  action :run
+end
