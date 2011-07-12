@@ -17,7 +17,7 @@ default_attributes(
 		},
 		"network_manager" => "nova.network.manager.FlatDHCPManager",
 		"default_project" => "admin",
-		"glance_host" => "glance1",
+		"glance_api_servers" => "glance1:9292",
 		"flat_network_bridge" => "xenbr0",
 		"flat_network_dhcp_start" => "192.168.0.2",
 		"fixed_range" => "192.168.0.0/24",
