@@ -37,6 +37,8 @@ template "/etc/sysctl.conf" do
   notifies :run, resources(:execute => "sysctl -p"), :immediately
 end
 
-execute "ip a add #{node[:nova][:public_network_gateway_ip]} dev #{node[:nova][:public_interface]}" do
-  action :run
+if node[:nova][:network_manager] == "nova.network.manager.FlatManager" then
+  execute "ip a add #{node[:nova][:public_network_gateway_ip]} dev #{node[:nova][:public_interface]}" do
+    action :run
+  end
 end
