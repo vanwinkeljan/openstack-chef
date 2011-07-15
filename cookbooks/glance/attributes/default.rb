@@ -24,5 +24,8 @@ default[:glance][:swift_store_key] = "a86850deb2742ec3cb41518e26aa2d89"
 default[:glance][:swift_store_container] = "glance"
 default[:glance][:swift_store_create_container_on_put] = "False"
 
-# automatically glance upload the tty linux image. (glance::setup recipe)
-default[:glance][:tty_linux_image] = "http://c3226372.r72.cf0.rackcdn.com/tty_linux.tar.gz"
+# Attributes for the glance::load_images recipe
+#
+#default[:glance][:tty_linux_image] = "http://c3226372.r72.cf0.rackcdn.com/tty_linux.tar.gz"
+#
+#default[:glance][:image_list] = [{:name => "squeeze", :url => "http://c3324746.r46.cf0.rackcdn.com/squeeze-agent-0.0.1.28.ova", :disk_format => "vhd", :container_format="ovf"}]
