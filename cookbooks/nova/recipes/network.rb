@@ -21,7 +21,7 @@ include_recipe "nova::common"
 nova_package("network")
 
 if node[:nova][:use_ipv6] == "True" then
-	package "radvd"
+  package "radvd"
 end
 
 execute "sysctl -p" do
@@ -40,5 +40,6 @@ end
 if node[:nova][:network_manager] == "nova.network.manager.FlatManager" then
   execute "ip a add #{node[:nova][:public_network_gateway_ip]} dev #{node[:nova][:public_interface]}" do
     action :run
+    not_if "ip a | grep #{node[:nova][:public_network_gateway_ip]} | grep #{node[:nova][:public_interface]}"
   end
 end
