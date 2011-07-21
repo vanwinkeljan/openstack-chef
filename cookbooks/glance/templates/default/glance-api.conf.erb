@@ -51,6 +51,15 @@ swift_store_container = <%= node[:glance][:swift_store_container] %>
 # Do we create the container if it does not exist?
 swift_store_create_container_on_put = <%= node[:glance][:swift_store_create_container_on_put] %>
 
+# ============ Image Cache Options ========================
+
+# Whether to enable the caching of image data
+image_cache_enabled = <%= node[:glance][:image_cache_enabled] %>
+
+# Directory that the Image Cache writes data to
+# Make sure this is also set in glance-pruner.conf
+image_cache_datadir = <%= node[:glance][:image_cache_datadir] %>
+
 [pipeline:glance-api]
 pipeline = versionnegotiation apiv1app
 
