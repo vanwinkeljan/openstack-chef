@@ -51,10 +51,19 @@ apt_repository "local" do
   action :add
 end
 
-apt_repository "ppa" do
+apt_repository "nova_ppa" do
   key "2A2356C9"
   keyserver "keyserver.ubuntu.com"
-  uri node[:vpc][:apt][:ppa_url]
+  uri node[:vpc][:apt][:nova_ppa_url]
+  distribution node[:vpc][:apt][:distro]
+  components(["main"])
+  action :add
+end
+
+apt_repository "glance_ppa" do
+  key "2085FE8D"
+  keyserver "keyserver.ubuntu.com"
+  uri node[:vpc][:apt][:glance_ppa_url]
   distribution node[:vpc][:apt][:distro]
   components(["main"])
   action :add
