@@ -50,6 +50,22 @@ execute "unzip /var/lib/nova/nova.zip -d #{node[:nova][:creds][:dir]}/" do
   not_if { File.exists?("#{node[:nova][:creds][:dir]}/novarc") }
 end
 
+if node[:nova][:auth_type] == "keystone" then
+  keystone_service_url = "#{node[:nova][:keystone_auth_uri]}v2.0/tokens"
+
+  bash "configure novarc for keystone" do
+    action :run
+    user "root"
+    code <<-EOH
+sed -i -e 's|^export NOVA_API_KEY.*|export NOVA_API_KEY=AABBCC112233|' -i #{node[:nova][:creds][:dir]}/novarc
+sed -i -e 's|^export NOVA_URL.*|export NOVA_URL=#{keystone_service_url}|' -i #{node[:nova][:creds][:dir]}/novarc
+sed -i -e 's|^export EC2_ACCESS_KEY.*|export EC2_ACCESS_KEY="admin:admin"|' -i #{node[:nova][:creds][:dir]}/novarc
+sed -i -e 's|^export EC2_SECRET_KEY.*|export EC2_SECRET_KEY="admin"|' -i #{node[:nova][:creds][:dir]}/novarc
+    EOH
+    not_if "grep tokens #{node[:nova][:creds][:dir]}/novarc"
+  end
+end
+
 execute "echo \"source #{node[:nova][:creds][:dir]}/novarc\" >> /etc/bash.bashrc" do
   user "root"
   not_if "grep #{node[:nova][:creds][:dir]}/novarc /etc/bash.bashrc"

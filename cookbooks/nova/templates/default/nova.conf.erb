@@ -56,6 +56,7 @@
 <%= get_flag(:service_down_time) %>
 <%= get_flag(:network_driver) %>
 <%= get_flag(:host) %>
+<%= get_flag(:keystone_ec2_url) %>
 
 <% if @sql_connection %>--sql_connection=<%= @sql_connection %><% end %>
 <% if @rabbit_settings %>

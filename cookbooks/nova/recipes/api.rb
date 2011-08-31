@@ -18,4 +18,18 @@
 #
 
 include_recipe "nova::common"
+
+#FIXME: This should come out if/when we require python-keystone in api package
+if node[:nova][:auth_type] and node[:nova][:auth_type] == "keystone" then
+  package "python-keystone"
+end
+
 nova_package("api")
+
+template "/etc/nova/api-paste.ini" do
+  source "api-paste.ini.erb"
+  owner "nova"
+  group "root"
+  mode 0644
+  notifies :restart, resources(:service => "nova-api")
+end

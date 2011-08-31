@@ -50,3 +50,16 @@ default[:nova][:dhcpbridge] = "/usr/bin/nova-dhcpbridge"
 default[:nova][:logdir] = "/var/log/nova"
 default[:nova][:state_path] = "/var/lib/nova"
 default[:nova][:verbose] = true
+
+#auth type
+default[:nova][:auth_type] = "noauth"
+
+#keystone settings
+default[:nova][:keystone_service_protocol] = "http"
+default[:nova][:keystone_service_host] = "127.0.0.1"
+default[:nova][:keystone_service_port] = "5000"
+default[:nova][:keystone_auth_host] = "127.0.0.1"
+default[:nova][:keystone_auth_port] = "5001"
+default[:nova][:keystone_auth_protocol] = "http"
+default[:nova][:keystone_auth_uri] = "http://127.0.0.1:5000/"
+default[:nova][:keystone_admin_token] = "999888777666"
