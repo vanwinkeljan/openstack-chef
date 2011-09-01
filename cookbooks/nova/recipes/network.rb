@@ -37,7 +37,7 @@ template "/etc/sysctl.conf" do
   notifies :run, resources(:execute => "sysctl -p"), :immediately
 end
 
-if node[:nova][:network_manager] == "nova.network.manager.FlatManager" then
+if node[:nova][:network_manager] == "nova.network.manager.FlatManager" and node[:nova][:public_network_gateway_ip] then
   execute "ip a add #{node[:nova][:public_network_gateway_ip]} dev #{node[:nova][:public_interface]}" do
     action :run
     not_if "ip a | grep #{node[:nova][:public_network_gateway_ip]} | grep #{node[:nova][:public_interface]}"

@@ -27,8 +27,22 @@ default[:glance][:swift_store_create_container_on_put] = "False"
 default[:glance][:image_cache_enabled] = "False"
 default[:glance][:image_cache_datadir] = "/var/lib/glance/image-cache/"
 
-# Attributes for the glance::load_images recipe
+#auth type (noauth or keystone)
+default[:glance][:auth_type] = "noauth"
+
+#keystone settings
+default[:glance][:keystone_service_protocol] = "http"
+default[:glance][:keystone_service_host] = "127.0.0.1"
+default[:glance][:keystone_service_port] = "5000"
+default[:glance][:keystone_auth_host] = "127.0.0.1"
+default[:glance][:keystone_auth_port] = "5001"
+default[:glance][:keystone_auth_protocol] = "http"
+default[:glance][:keystone_auth_uri] = "http://127.0.0.1:5000/"
+default[:glance][:keystone_admin_token] = "999888777666"
+
+
+# Example Attributes for the glance::load_images recipe:
 #
-#default[:glance][:tty_linux_image] = "http://c3226372.r72.cf0.rackcdn.com/tty_linux.tar.gz"
+# default[:glance][:tty_linux_image] = "http://abc.rackcdn.com/tty_linux.tar.gz"
 #
-#default[:glance][:image_list] = [{:name => "squeeze", :url => "http://c3324746.r46.cf0.rackcdn.com/squeeze-agent-0.0.1.28.ova", :disk_format => "vhd", :container_format="ovf"}]
+# default[:glance][:image_list] = [{:name => "squeeze", :url => "http://abc.rackcdn.com/squeeze-agent-0.0.1.28.ova", :disk_format => "vhd", :container_format="ovf"}]

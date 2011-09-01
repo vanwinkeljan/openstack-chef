@@ -24,7 +24,7 @@ template vhost_conf do
   mode 0644
 end
 
-link "/etc/nginx/sites-enabled/vhost-#{node[:apt][:repo_name]}.conf" do
+link "/etc/nginx/sites-enabled/vhost-#{node[:nginx][:vhost]}.conf" do
   to vhost_conf
 end
 

@@ -54,10 +54,6 @@ elsif not node[:nova][:connection_type] or node[:nova][:connection_type] == "lib
     not_if "mount | grep cgroup"
   end
 
-  execute "apt-get -y --force-yes install libvirt0=#{node[:libvirt][:version]} libvirt-bin=#{node[:libvirt][:version]} python-libvirt=#{node[:libvirt][:version]}" do
-    not_if "dpkg -l libvirt-bin | grep #{node[:libvirt][:version]}"
-  end
-
   service "libvirt-bin"
 
   cookbook_file "/etc/libvirt/qemu.conf" do

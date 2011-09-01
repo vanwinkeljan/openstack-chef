@@ -25,10 +25,23 @@ default[:keystone][:setup_commands] = [
 "user add admin AABBCC112233 admin",
 "role add Admin nova",
 "role add Member nova",
+"role grant Admin admin admin",
 "role grant Admin admin",
 "endpointTemplates add RegionOne nova http://nova1:8774/v1.1 http://nova1:8774/v1.1 http://nova1:8774/v1.1 1 1",
+"endpointTemplates add RegionOne glance http://glance1:9292/v1 http://glance1:9292/v1 http://glance1:9292/v1 1 1",
 "endpoint add admin 1",
 "service add nova",
+"service add glance",
 "credentials add admin EC2 'admin:admin' admin admin",
 "token add '999888777666' 'admin' 'admin' '2020-02-05T00:00'"
+]
+
+default[:keystone][:creds] = [
+  {
+  :os_user => "root",
+  :auth_user => "admin",
+  :auth_key => "AABBCC112233",
+  :auth_tenant => "admin",
+  :auth_url => "http://login:5000/v2.0"
+  }
 ]
