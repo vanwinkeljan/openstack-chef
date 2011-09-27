@@ -57,6 +57,7 @@
 <%= get_flag(:network_driver) %>
 <%= get_flag(:host) %>
 <%= get_flag(:keystone_ec2_url) %>
+<%= get_flag(:allow_resize_to_same_host) %>
 
 <% if @sql_connection %>--sql_connection=<%= @sql_connection %><% end %>
 <% if @rabbit_settings %>
