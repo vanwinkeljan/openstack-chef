@@ -16,6 +16,13 @@ directory File.dirname(node[:keystone][:config_file]) do
   action :create
 end
 
+directory File.dirname(node[:keystone][:db_file]) do
+  owner "keystone"
+  group "root"
+  mode "0755"
+  action :create
+end
+
 directory File.dirname(node[:keystone][:log_config]) do
   owner "keystone"
   group "root"

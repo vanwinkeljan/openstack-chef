@@ -1,5 +1,6 @@
 default[:keystone][:config_file] = "/etc/keystone/keystone.conf"
 default[:keystone][:log_config] = "/etc/keystone/logging.cnf"
+default[:keystone][:db_file] = "/var/lib/keystone/keystone.db"
 
 default[:keystone][:verbose] = "True"
 default[:keystone][:debug] = "True"
@@ -27,11 +28,11 @@ default[:keystone][:setup_commands] = [
 "role add Member nova",
 "role grant Admin admin admin",
 "role grant Admin admin",
-"endpointTemplates add RegionOne nova http://nova1:8774/v1.1 http://nova1:8774/v1.1 http://nova1:8774/v1.1 1 1",
+"service add nova compute",
+"service add glance image",
+"endpointTemplates add RegionOne nova http://nova1:8774/v1.1/%tenant_id% http://nova1:8774/v1.1/%tenant_id% http://nova1:8774/v1.1/%tenant_id% 1 1",
 "endpointTemplates add RegionOne glance http://glance1:9292/v1 http://glance1:9292/v1 http://glance1:9292/v1 1 1",
 "endpoint add admin 1",
-"service add nova",
-"service add glance",
 "credentials add admin EC2 'admin:admin' admin admin",
 "token add '999888777666' 'admin' 'admin' '2020-02-05T00:00'"
 ]
