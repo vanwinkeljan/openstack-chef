@@ -84,17 +84,7 @@ paste.app_factory = nova.api.ec2.metadatarequesthandler:MetadataRequestHandler.f
 [composite:osapi]
 use = egg:Paste#urlmap
 /: osversions
-/v1.0: openstackapi10
 /v1.1: openstackapi11
-
-[pipeline:openstackapi10]
-<% if node[:nova][:auth_type] == "noauth" %>
-pipeline = faultwrap noauth ratelimit osapiapp10
-<% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = faultwrap auth ratelimit osapiapp10
-<% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = faultwrap authtoken keystonecontext ratelimit osapiapp10
-<% end %>
 
 [pipeline:openstackapi11]
 <% if node[:nova][:auth_type] == "noauth" %>
@@ -120,11 +110,8 @@ paste.filter_factory = nova.api.openstack.limits:RateLimitingMiddleware.factory
 [filter:extensions]
 paste.filter_factory = nova.api.openstack.extensions:ExtensionMiddleware.factory
 
-[app:osapiapp10]
-paste.app_factory = nova.api.openstack:APIRouterV10.factory
-
 [app:osapiapp11]
-paste.app_factory = nova.api.openstack:APIRouterV11.factory
+paste.app_factory = nova.api.openstack:APIRouter.factory
 
 [pipeline:osversions]
 pipeline = faultwrap osversionapp
