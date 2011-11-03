@@ -11,7 +11,6 @@ define :glance_service do
     end
     supports :status => true, :restart => true
     action :start
-    subscribes :restart, resources(:template => "/etc/glance/glance-#{params[:name]}.conf")
   end
 
 end

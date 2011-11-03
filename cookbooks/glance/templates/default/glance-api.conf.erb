@@ -16,15 +16,74 @@ bind_host = <%= node[:glance][:api_bind_host] %>
 # Port the bind the API server to
 bind_port = <%= node[:glance][:api_bind_port] %>
 
+# Log to this file. Make sure you do not set the same log
+# file for both the API and registry servers!
+log_file = <%= node[:glance][:log_dir] %>/api.log
+
+# Send logs to syslog (/dev/log) instead of to file specified by `log_file`
+use_syslog = <%= node[:glance][:use_syslog] %>
+
+# Backlog requests when creating socket
+backlog = <%= node[:glance][:backlog] %>
+
+# ================= SSL Options ===============================
+
+# Certificate file to use when starting API server securely
+<% if node[:glance][:cert_file] then %>
+cert_file = <%= node[:glance][:cert_file] %>
+<% end %>
+
+# Private key file to use when starting API server securely
+<% if node[:glance][:key_file] then %>
+key_file = <%= node[:glance][:key_file] %>
+<% end %>
+
+# ============ Registry Options ===============================
+
 # Address to find the registry server
 registry_host = <%= node[:glance][:registry_host] %>
 
 # Port the registry server is listening on
 registry_port = <%= node[:glance][:registry_bind_port] %>
 
-# Log to this file. Make sure you do not set the same log
-# file for both the API and registry servers!
-log_file = /var/log/glance/api.log
+# The path to the key file to use in SSL connections to the
+# registry server, if any. Alternately, you may set the
+# GLANCE_CLIENT_KEY_FILE environ variable to a filepath of the key file
+<% if node[:glance][:registry_client_key_file] then %>
+registry_client_key_file = <%= node[:glance][:registry_client_key_file] %>
+<% end %>
+
+# The path to the cert file to use in SSL connections to the
+# registry server, if any. Alternately, you may set the
+# GLANCE_CLIENT_CERT_FILE environ variable to a filepath of the cert file
+<% if node[:glance][:registry_client_cert_file] then %>
+registry_client_cert_file = <%= node[:glance][:registry_client_cert_file] %>
+<% end %>
+
+# The path to the certifying authority cert file to use in SSL connections
+# to the registry server, if any. Alternately, you may set the
+# GLANCE_CLIENT_CA_FILE environ variable to a filepath of the CA cert file
+<% if node[:glance][:registry_client_ca_file] then %>
+registry_client_ca_file = <%= node[:glance][:registry_client_ca_file] %>
+<% end %>
+
+# ============ Notification System Options =====================
+
+# Notifications can be sent when images are create, updated or deleted.
+# There are three methods of sending notifications, logging (via the
+# log_file directive), rabbit (via a rabbitmq queue) or noop (no
+# notifications sent, the default)
+notifier_strategy = <%= node[:glance][:notifier_strategy] %>
+
+# Configuration options if sending notifications via rabbitmq (these are
+# the defaults)
+rabbit_host = <%= node[:glance][:rabbit_host] %>
+rabbit_port = <%= node[:glance][:rabbit_port] %>
+rabbit_use_ssl = <%= node[:glance][:rabbit_use_ssl] %>
+rabbit_userid = <%= node[:glance][:rabbit_userid] %>
+rabbit_password = <%= node[:glance][:rabbit_password] %>
+rabbit_virtual_host = <%= node[:glance][:rabbit_virtual_host] %>
+rabbit_notification_topic = <%= node[:glance][:rabbit_notification_topic] %>
 
 # ============ Filesystem Store Options ========================
 
@@ -51,33 +110,101 @@ swift_store_container = <%= node[:glance][:swift_store_container] %>
 # Do we create the container if it does not exist?
 swift_store_create_container_on_put = <%= node[:glance][:swift_store_create_container_on_put] %>
 
-# ============ Image Cache Options ========================
+# What size, in MB, should Glance start chunking image files
+# and do a large object manifest in Swift? By default, this is
+# the maximum object size in Swift, which is 5GB
+swift_store_large_object_size = <%= node[:glance][:swift_store_large_object_size] %>
 
-# Whether to enable the caching of image data
-image_cache_enabled = <%= node[:glance][:image_cache_enabled] %>
+# When doing a large object manifest, what size, in MB, should
+# Glance write chunks to Swift? This amount of data is written
+# to a temporary disk buffer during the process of chunking
+# the image file, and the default is 200MB
+swift_store_large_object_chunk_size = <%= node[:glance][:swift_store_large_object_chunk_size] %>
 
-# Directory that the Image Cache writes data to
-# Make sure this is also set in glance-pruner.conf
-image_cache_datadir = <%= node[:glance][:image_cache_datadir] %>
+# Whether to use ServiceNET to communicate with the Swift storage servers.
+# (If you aren't RACKSPACE, leave this False!)
+#
+# To use ServiceNET for authentication, prefix hostname of
+# `swift_store_auth_address` with 'snet-'.
+# Ex. https://example.com/v1.0/ -> https://snet-example.com/v1.0/
+swift_enable_snet = <%= node[:glance][:swift_enable_snet] %> 
+
+# ============ S3 Store Options =============================
+
+# Address where the S3 authentication service lives
+s3_store_host = <%= node[:glance][:s3_store_host] %>
+
+# User to authenticate against the S3 authentication service
+s3_store_access_key = <%= node[:glance][:s3_store_access_key] %>
+
+# Auth key for the user authenticating against the
+# S3 authentication service
+s3_store_secret_key = <%= node[:glance][:s3_store_secret_key] %>
+
+# Container within the account that the account should use
+# for storing images in S3. Note that S3 has a flat namespace,
+# so you need a unique bucket name for your glance images. An
+# easy way to do this is append your AWS access key to "glance".
+# S3 buckets in AWS *must* be lowercased, so remember to lowercase
+# your AWS access key if you use it in your bucket name below!
+s3_store_bucket = <%= node[:glance][:s3_store_bucket] %>
+
+# Do we create the bucket if it does not exist?
+s3_store_create_bucket_on_put = <%= node[:glance][:s3_store_create_bucket_on_put] %>
+
+# ============ RBD Store Options =============================
+
+# Ceph configuration file path
+# If using cephx authentication, this file should
+# include a reference to the right keyring
+# in a client.<USER> section
+rbd_store_ceph_conf = <%= node[:glance][:rbd_store_ceph_conf] %>
+
+# RADOS user to authenticate as (only applicable if using cephx)
+rbd_store_user = <%= node[:glance][:rbd_store_user] %>
+
+# RADOS pool in which images are stored
+rbd_store_pool = <%= node[:glance][:rbd_store_pool] %>
+
+# Images will be chunked into objects of this size (in megabytes).
+# For best performance, this should be a power of two
+rbd_store_chunk_size = <%= node[:glance][:rbd_store_chunk_size] %>
+
+# ============ Delayed Delete Options =============================
+
+# Turn on/off delayed delete
+delayed_delete = <%= node[:glance][:delayed_delete] %>
+
+# Delayed delete time in seconds
+scrub_time = <%= node[:glance][:scrub_time] %>
+
+# Directory that the scrubber will use to remind itself of what to delete
+# Make sure this is also set in glance-scrubber.conf
+scrubber_datadir = <%= node[:glance][:scrubber_datadir] %>
+
+# =============== Image Cache Options =============================
+
+# Base directory that the Image Cache uses
+image_cache_dir = <%= node[:glance][:image_cache_dir] %>
 
 [pipeline:glance-api]
 <% if node[:glance][:auth_type] == "noauth" %>
-pipeline = versionnegotiation context apiv1app
+pipeline = versionnegotiation context <%= @cache %> <%= @cachemanage %> apiv1app
 <% elsif node[:glance][:auth_type] == "keystone" %>
-pipeline = versionnegotiation authtoken context apiv1app
+pipeline = versionnegotiation authtoken context <%= @cache %> <%= @cachemanage %> apiv1app
 <% end %>
-
-[pipeline:versions]
-pipeline = versionsapp
-
-[app:versionsapp]
-paste.app_factory = glance.api.versions:app_factory
 
 [app:apiv1app]
 paste.app_factory = glance.api.v1:app_factory
 
 [filter:versionnegotiation]
 paste.filter_factory = glance.api.middleware.version_negotiation:filter_factory
+
+[filter:cache]
+paste.filter_factory = glance.api.middleware.cache:filter_factory
+
+[filter:cachemanage]
+paste.filter_factory = glance.api.middleware.cache_manage:filter_factory
 
 [filter:context]
 paste.filter_factory = glance.common.context:filter_factory
@@ -92,3 +219,6 @@ auth_port = <%= node[:glance][:keystone_auth_port] %>
 auth_protocol = <%= node[:glance][:keystone_auth_protocol] %>
 auth_uri = <%= node[:glance][:keystone_auth_uri] %>
 admin_token = <%= node[:glance][:keystone_admin_token] %>
+
+[filter:auth-context]
+paste.filter_factory = keystone.middleware.glance_auth_token:filter_factory
