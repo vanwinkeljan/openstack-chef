@@ -13,6 +13,7 @@ action :add do
     repository = "deb"
     repository = "deb-src" if new_resource.deb_src
     repository = "# Created by the Chef apt_repository LWRP\n" + repository
+    repository += " [ #{new_resource.options} ]" if new_resource.options
     repository += " #{new_resource.uri}"
     repository += " #{new_resource.distribution}"
     new_resource.components.each {|component| repository += " #{component}"}

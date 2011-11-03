@@ -7,7 +7,7 @@ run_list(
 default_attributes(
 	"apt" => {
 		"repo_name" => "openstack",
-		"repo_codename" => "maverick",
+		"repo_codename" => "oneiric",
 		"repo_archs" => "amd64",
 		"upload_package_dir" => "/root/openstack-packages"
 	}
