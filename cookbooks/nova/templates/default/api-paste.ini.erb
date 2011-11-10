@@ -88,9 +88,9 @@ use = egg:Paste#urlmap
 
 [pipeline:openstackapi11]
 <% if node[:nova][:auth_type] == "noauth" %>
-pipeline = faultwrap noauth ratelimit extensions osapiapp11
+pipeline = faultwrap noauth ratelimit serialize extensions osapiapp11
 <% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = faultwrap auth ratelimit extensions osapiapp11
+pipeline = faultwrap auth ratelimit serialize extensions osapiapp11
 <% elsif node[:nova][:auth_type] == "keystone" %>
 pipeline = faultwrap authtoken keystonecontext ratelimit extensions osapiapp11
 <% end %>
@@ -106,6 +106,9 @@ paste.filter_factory = nova.api.openstack.auth:NoAuthMiddleware.factory
 
 [filter:ratelimit]
 paste.filter_factory = nova.api.openstack.limits:RateLimitingMiddleware.factory
+
+[filter:serialize]
+paste.filter_factory = nova.api.openstack.wsgi:LazySerializationMiddleware.factory
 
 [filter:extensions]
 paste.filter_factory = nova.api.openstack.extensions:ExtensionMiddleware.factory
