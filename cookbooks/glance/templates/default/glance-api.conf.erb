@@ -191,7 +191,7 @@ image_cache_dir = <%= node[:glance][:image_cache_dir] %>
 <% if node[:glance][:auth_type] == "noauth" %>
 pipeline = versionnegotiation context <%= @cache %> <%= @cachemanage %> apiv1app
 <% elsif node[:glance][:auth_type] == "keystone" %>
-pipeline = versionnegotiation authtoken context <%= @cache %> <%= @cachemanage %> apiv1app
+pipeline = versionnegotiation authtoken auth-context <%= @cache %> <%= @cachemanage %> apiv1app
 <% end %>
 
 [app:apiv1app]
