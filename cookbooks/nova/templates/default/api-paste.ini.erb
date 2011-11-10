@@ -92,7 +92,7 @@ pipeline = faultwrap noauth ratelimit serialize extensions osapiapp11
 <% elsif node[:nova][:auth_type] == "deprecated" %>
 pipeline = faultwrap auth ratelimit serialize extensions osapiapp11
 <% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = faultwrap authtoken keystonecontext ratelimit extensions osapiapp11
+pipeline = faultwrap authtoken keystonecontext ratelimit serialize extensions osapiapp11
 <% end %>
 
 [filter:faultwrap]
