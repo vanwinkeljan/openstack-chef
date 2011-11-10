@@ -15,6 +15,7 @@ if image_list then
       cwd "/tmp"
       user "root"
       code <<-EOH
+        [ -f /root/openstackrc ] && source /root/openstackrc
         curl #{img[:url]} | glance add name=#{img[:name]} disk_format=#{img[:disk_format]} container_format=#{img[:container_format]} is_public=True
       EOH
       not_if do glance_img_index.include?(" #{img[:name]} ") end
@@ -29,6 +30,7 @@ if tty_linux_image and not tty_linux_image.empty? then
     user "root"
     code <<-EOH
       mkdir -p /var/lib/glance/
+      [ -f /root/openstackrc ] && source /root/openstackrc
       curl #{tty_linux_image} | tar xvz -C /tmp/
       ARI_ID=`glance add name="ari-tty" type="ramdisk" disk_format="ari" container_format="ari" is_public=true < /tmp/tty_linux/ramdisk | sed 's/.*\: //g'`
       AKI_ID=`glance add name="aki-tty" type="kernel" disk_format="aki" container_format="aki" is_public=true < /tmp/tty_linux/kernel | sed 's/.*\: //g'`
