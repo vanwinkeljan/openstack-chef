@@ -36,6 +36,11 @@ registry_host = <%= node[:glance][:registry_host] %>
 # Port the registry server is listening on
 registry_port = <%= node[:glance][:registry_bind_port] %>
 
+# Admin token to use if using Keystone
+<% if node[:glance][:auth_type] == "keystone" %>
+admin_token = <%= node[:glance][:keystone_admin_token] %>
+<% end %>
+
 [app:glance-pruner]
 paste.app_factory = glance.image_cache.pruner:app_factory
 
