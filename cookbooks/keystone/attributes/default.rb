@@ -18,6 +18,13 @@ default[:keystone][:admin_role] = "Admin"
 default[:keystone][:service_admin_role] = "KeystoneServiceAdmin"
 default[:keystone][:sql_idle_timeout] = "3600"
 
+default[:keystone][:hash_password] = "True"
+default[:keystone][:admin_ssl] = "True"
+default[:keystone][:certfile] = "/etc/keystone/ssl/certs/keystone.pem"
+default[:keystone][:keyfile] = "/etc/keystone/ssl/private/keystonekey.pem"
+default[:keystone][:ca_certs] = "/etc/keystone/ssl/certs/ca.pem"
+default[:keystone][:cert_required] = "True"
+
 default[:keystone][:sql_connection] = "sqlite:////var/lib/keystone/keystone.sqlite"
 
 #default setup commands for keystone::setup recipe

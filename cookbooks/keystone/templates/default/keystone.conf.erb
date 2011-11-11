@@ -27,6 +27,9 @@ service-header-mappings = {
 	'swift' : 'X-Storage-Url',
 	'cdn' : 'X-CDN-Management-Url'}
 
+#List of extensions currently supported
+extensions= osksadm,oskscatalog
+
 # Address to bind the API server
 # TODO Properties defined within app not available via pipeline.
 service_host = <%= node[:keystone][:service_host] %>
@@ -40,11 +43,33 @@ admin_host = <%= node[:keystone][:admin_host] %>
 # Port the bind the Admin API server to
 admin_port = <%= node[:keystone][:admin_port] %>
 
+# SSL for API Admin server
+admin_ssl = <%= node[:keystone][:admin_ssl] %>
+
+# Keystone certificate file (modify as needed)
+# Only required if *_ssl is set to True
+certfile = <%= node[:keystone][:certfile] %>
+
+# Keystone private key file (modify as needed)
+# Only required if *_ssl is set to True
+keyfile = <%= node[:keystone][:keyfile] %>
+
+# Keystone trusted CA certificates  (modify as needed)
+# Only required if *_ssl is set to True
+ca_certs = <%= node[:keystone][:ca_certs] %>
+
+# Client certificate required
+# Only relevant if *_ssl is set to True
+cert_required = <%= node[:keystone][:cert_required] %>
+
 #Role that allows to perform admin operations.
 keystone-admin-role = <%= node[:keystone][:admin_role] %>
 
 #Role that allows to perform service admin operations.
 keystone-service-admin-role = <%= node[:keystone][:service_admin_role] %>
+
+#Tells whether password user need to be hashed in the backend
+hash-password = <%= node[:keystone][:hash_password] %>
 
 [keystone.backends.sqlalchemy]
 # SQLAlchemy connection string for the reference implementation registry
@@ -61,12 +86,12 @@ sql_idle_timeout = <%= node[:keystone][:sql_idle_timeout] %>
 
 [pipeline:admin]
 pipeline =
-	urlrewritefilter
-	admin_api
+    urlrewritefilter
+    admin_api
 
 [pipeline:keystone-legacy-auth]
 pipeline =
-	urlrewritefilter
+    urlrewritefilter
     legacy_auth
     RAX-KEY-extension
     service_api
@@ -85,3 +110,6 @@ paste.filter_factory = keystone.frontends.legacy_token_auth:filter_factory
 
 [filter:RAX-KEY-extension]
 paste.filter_factory = keystone.contrib.extensions.service.raxkey.frontend:filter_factory
+
+[filter:debug]
+paste.filter_factory = keystone.common.wsgi:debug_filter_factory
