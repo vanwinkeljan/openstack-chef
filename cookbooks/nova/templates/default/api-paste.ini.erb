@@ -84,43 +84,44 @@ paste.app_factory = nova.api.ec2.metadatarequesthandler:MetadataRequestHandler.f
 [composite:osapi]
 use = egg:Paste#urlmap
 /: osversions
-/v1.1: openstackapi11
+/v1.1: openstack_api_v2
+/v2: openstack_api_v2
 
-[pipeline:openstackapi11]
+[pipeline:openstack_api_v2]
 <% if node[:nova][:auth_type] == "noauth" %>
-pipeline = faultwrap noauth ratelimit serialize extensions osapiapp11
+pipeline = faultwrap noauth ratelimit serialize extensions osapi_app_v2
 <% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = faultwrap auth ratelimit serialize extensions osapiapp11
+pipeline = faultwrap auth ratelimit serialize extensions osapi_app_v2
 <% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = faultwrap authtoken keystonecontext ratelimit serialize extensions osapiapp11
+pipeline = faultwrap authtoken keystonecontext ratelimit serialize extensions osapi_app_v2
 <% end %>
 
 [filter:faultwrap]
-paste.filter_factory = nova.api.openstack:FaultWrapper.factory
+paste.filter_factory = nova.api.openstack.v2:FaultWrapper.factory
 
 [filter:auth]
-paste.filter_factory = nova.api.openstack.auth:AuthMiddleware.factory
+paste.filter_factory = nova.api.openstack.v2.auth:AuthMiddleware.factory
 
 [filter:noauth]
-paste.filter_factory = nova.api.openstack.auth:NoAuthMiddleware.factory
+paste.filter_factory = nova.api.openstack.v2.auth:NoAuthMiddleware.factory
 
 [filter:ratelimit]
-paste.filter_factory = nova.api.openstack.limits:RateLimitingMiddleware.factory
+paste.filter_factory = nova.api.openstack.v2.limits:RateLimitingMiddleware.factory
 
 [filter:serialize]
 paste.filter_factory = nova.api.openstack.wsgi:LazySerializationMiddleware.factory
 
 [filter:extensions]
-paste.filter_factory = nova.api.openstack.extensions:ExtensionMiddleware.factory
+paste.filter_factory = nova.api.openstack.v2.extensions:ExtensionMiddleware.factory
 
-[app:osapiapp11]
-paste.app_factory = nova.api.openstack:APIRouter.factory
+[app:osapi_app_v2]
+paste.app_factory = nova.api.openstack.v2:APIRouter.factory
 
 [pipeline:osversions]
 pipeline = faultwrap osversionapp
 
 [app:osversionapp]
-paste.app_factory = nova.api.openstack.versions:Versions.factory
+paste.app_factory = nova.api.openstack.v2.versions:Versions.factory
 
 ##########
 # Shared #
