@@ -37,6 +37,9 @@ service_host = <%= node[:keystone][:service_host] %>
 # Port the bind the API server to
 service_port = <%= node[:keystone][:service_port] %>
 
+# SSL for API server
+service_ssl = <%= node[:keystone][:service_ssl] %>
+
 # Address to bind the Admin API server
 admin_host = <%= node[:keystone][:admin_host] %>
 
