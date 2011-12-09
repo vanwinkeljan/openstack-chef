@@ -4,7 +4,7 @@
 #
 #
 
-package "glance" do
+package "glance-common" do
   options "--force-yes"
   action :install
 end

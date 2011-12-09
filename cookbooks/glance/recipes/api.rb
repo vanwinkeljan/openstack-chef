@@ -34,7 +34,23 @@ template node[:glance][:scrubber_config_file] do
   mode 0644
 end
 
-glance_service "api"
+package "glance-api" do
+  options "--force-yes -o Dpkg::Options::=\"--force-confdef\""
+  action :install
+end
+
+service "glance-api" do
+  if (platform?("ubuntu") && node.platform_version.to_f >= 10.04)
+    restart_command "restart glance-api"
+    stop_command "stop glance-api"
+    start_command "start glance-api"
+    status_command "status glance-api | cut -d' ' -f2 | cut -d'/' -f1 | grep start"
+  end
+  supports :status => true, :restart => true
+  action :start
+  subscribes :restart, resources(:template => node[:glance][:api_config_file])
+  subscribes :restart, resources(:package => "glance-api")
+end
 
 file "/var/log/glance/api.log" do
   owner "glance"

@@ -43,8 +43,6 @@ else
   sql_connection = "sqlite:////var/lib/glance/glance.sqlite"
 end
 
-glance_service "registry"
-
 template node[:glance][:registry_config_file] do
   source "glance-registry.conf.erb"
   owner "glance"
@@ -53,5 +51,22 @@ template node[:glance][:registry_config_file] do
   variables(
     :sql_connection => sql_connection
   )
-  notifies :restart, resources(:service => "glance-registry"), :immediately
+end
+
+package "glance-registry" do
+  options "--force-yes -o Dpkg::Options::=\"--force-confdef\""
+  action :install
+end
+
+service "glance-registry" do
+  if (platform?("ubuntu") && node.platform_version.to_f >= 10.04)
+    restart_command "restart glance-registry"
+    stop_command "stop glance-registry"
+    start_command "start glance-registry"
+    status_command "status glance-registry | cut -d' ' -f2 | cut -d'/' -f1 | grep start"
+  end
+  supports :status => true, :restart => true
+  action :start
+  subscribes :restart, resources(:template => node[:glance][:registry_config_file])
+  subscribes :restart, resources(:package => "glance-registry")
 end
