@@ -35,4 +35,5 @@ registry_host = <%= node[:glance][:registry_host] %>
 registry_port = <%= node[:glance][:registry_bind_port] %>
 
 [app:glance-scrubber]
-paste.app_factory = glance.store.scrubber:app_factory
+paste.app_factory = glance.common.wsgi:app_factory
+glance.app_factory = glance.store.scrubber:Scrubber
