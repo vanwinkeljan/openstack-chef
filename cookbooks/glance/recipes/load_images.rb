@@ -14,8 +14,16 @@ if image_list then
       user "root"
       code <<-EOH
         [ -f /root/openstackrc ] && source /root/openstackrc
-        curl #{img[:url]} | glance add name=#{img[:name]} disk_format=#{img[:disk_format]} container_format=#{img[:container_format]} is_public=True
-        touch /var/lib/glance/chef_images_loaded
+        # wait for glance/keystone to come up
+        COUNT=0
+        until glance index; do
+          COUNT=$(( $COUNT + 1  ))
+          sleep 10 
+          [ "$COUNT" -eq "36" ] && break
+        done
+        if curl #{img[:url]} | glance add name=#{img[:name]} disk_format=#{img[:disk_format]} container_format=#{img[:container_format]} is_public=True; then
+            touch /var/lib/glance/chef_images_loaded
+        fi
       EOH
       not_if do File.exists?("/var/lib/glance/chef_images_loaded") end
     end
@@ -30,11 +38,19 @@ if tty_linux_image and not tty_linux_image.empty? then
     code <<-EOH
       mkdir -p /var/lib/glance/
       [ -f /root/openstackrc ] && source /root/openstackrc
+      # wait for glance/keystone to come up
+      COUNT=0
+      until glance index; do
+        COUNT=$(( $COUNT + 1  ))
+        sleep 10 
+        [ "$COUNT" -eq "36" ] && break
+      done
       curl #{tty_linux_image} | tar xvz -C /tmp/
       ARI_ID=`glance add name="ari-tty" type="ramdisk" disk_format="ari" container_format="ari" is_public=true < /tmp/tty_linux/ramdisk | sed 's/.*\: //g'`
       AKI_ID=`glance add name="aki-tty" type="kernel" disk_format="aki" container_format="aki" is_public=true < /tmp/tty_linux/kernel | sed 's/.*\: //g'`
-      glance add name="ami-tty" type="kernel" disk_format="ami" container_format="ami" ramdisk_id="$ARI_ID" kernel_id="$AKI_ID" is_public=true < /tmp/tty_linux/image
-      touch /var/lib/glance/chef_images_loaded
+      if glance add name="ami-tty" type="kernel" disk_format="ami" container_format="ami" ramdisk_id="$ARI_ID" kernel_id="$AKI_ID" is_public=true < /tmp/tty_linux/image; then
+          touch /var/lib/glance/chef_images_loaded
+      fi
     EOH
     not_if do File.exists?("/var/lib/glance/chef_images_loaded") end
   end
