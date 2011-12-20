@@ -6,6 +6,16 @@
 
 include_recipe "#{@cookbook_name}::common"
 
+# Locate glance registry and retrieve it's IP
+unless Chef::Config[:solo]
+  registries = search(:node, "recipes:glance\\:\\:registry")
+  if registries and registries[0]
+    node.default[:glance][:registry_host] = registries[0][:glance][:registry_host]
+  end
+end
+
+Chef::Log.info("Using glance registry at #{node[:glance][:registry_host]}")
+
 cache = node[:glance][:cache] == "True" ? "cache" : ""
 cachemanage = node[:glance][:cache_management] == "True" ? "cachemanage" : ""
 
