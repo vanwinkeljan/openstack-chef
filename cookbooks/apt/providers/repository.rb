@@ -8,6 +8,17 @@ action :add do
         action :run
       end
       e.run_action(:run)
+    elsif new_resource.key && (new_resource.key =~ /http/)
+      key_name = new_resource.key.split(/\//).last
+      remote_file "#{Chef::Config[:file_cache_path]}/#{key_name}" do
+        source new_resource.key
+        mode "0644"
+        action :create_if_missing
+      end
+      execute "install-key #{key_name}" do
+        command "apt-key add #{Chef::Config[:file_cache_path]}/#{key_name}"
+        action :run
+      end
     end
     # build our listing
     repository = "deb"
