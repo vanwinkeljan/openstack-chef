@@ -9,6 +9,7 @@ default[:glance][:pid_directory]="/var/run/glance"
 
 default[:glance][:verbose] = "True"
 default[:glance][:debug] = "True"
+default[:glance][:my_ip] = ipaddress
 default[:glance][:api_bind_host] = "0.0.0.0"
 default[:glance][:api_bind_port] = "9292"
 default[:glance][:registry_host] = ipaddress
