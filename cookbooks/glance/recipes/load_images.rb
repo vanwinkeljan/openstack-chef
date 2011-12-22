@@ -21,7 +21,7 @@ if image_list then
           sleep 10 
           [ "$COUNT" -eq "36" ] && break
         done
-        if curl #{img[:url]} | glance add name=#{img[:name]} disk_format=#{img[:disk_format]} container_format=#{img[:container_format]} is_public=True; then
+        if curl #{img[:url]} | glance add name="#{img[:name]}" disk_format=#{img[:disk_format]} container_format=#{img[:container_format]} is_public=True; then
             touch /var/lib/glance/chef_images_loaded
         fi
       EOH
