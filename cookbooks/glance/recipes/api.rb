@@ -70,6 +70,13 @@ file "/var/log/glance/api.log" do
   notifies :restart, resources(:service => "glance-api"), :immediately
 end
 
+directory node[:glance][:filesystem_store_datadir] do
+  owner "glance"
+  group "root"
+  mode "0755"
+  action :create
+end
+
 ["", "incomplete", "invalid", "queue"].each do |cache_dir|
 
   directory "#{node[:glance][:image_cache_dir]}/#{cache_dir}" do
