@@ -51,6 +51,6 @@ default[:keystone][:creds] = [
   :auth_user => "admin",
   :auth_key => "AABBCC112233",
   :auth_tenant => "admin",
-  :auth_url => "http://login:5000/v2.0"
+  :auth_url => "http://login:5000/v2.0/"
   }
 ]
