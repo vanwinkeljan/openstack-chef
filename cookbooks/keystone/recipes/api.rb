@@ -44,9 +44,10 @@ template node[:keystone][:log_config] do
   mode 0644
 end
 
-execute "keystone-manage database sync" do
-  user "keystone"
-end
+#This needs to be addressed: https://bugs.launchpad.net/keystone/+bug/908296
+#execute "keystone-manage database sync" do
+#  user "keystone"
+#end
 
 keystone_svc_name="keystone"
 service keystone_svc_name do
