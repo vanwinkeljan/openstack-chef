@@ -50,6 +50,11 @@ default[:nova][:logdir] = "/var/log/nova"
 default[:nova][:state_path] = "/var/lib/nova"
 default[:nova][:verbose] = true
 
+# Firewall driver for xenapi
+if node[:nova] and node[:nova][:connection_type]  and node[:nova][:connection_type] == "xenapi"
+  default[:nova][:firewall_driver] = 'nova.virt.xenapi.firewall.Dom0IptablesFirewallDriver'
+end
+
 #auth type
 default[:nova][:auth_type] = "noauth"
 
