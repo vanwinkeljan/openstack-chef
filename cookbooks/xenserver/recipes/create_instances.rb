@@ -32,15 +32,20 @@ node[:xenserver][:instances].each do |instance|
   end
 
   create_instance instance["hostname"] do
+    #common params
     image_path instance["image_path"] if instance["image_path"]
     xva_image_url instance["xva_image_url"] if instance["xva_image_url"]
+    mac instance["mac"]
+    # openstack guest agent params
     file_data_array file_data_array
     ip_address instance["ip_address"]
     broadcast instance["broadcast"]
     netmask instance["netmask"]
-    mac instance["mac"]
     dns_nameservers instance["dns_nameservers"]
     gateway instance["gateway"]
+    # dhcp params
+    use_dhcp instance["use_dhcp"]
+    xen_bridge instance["xen_bridge"]
   end
 
 end
