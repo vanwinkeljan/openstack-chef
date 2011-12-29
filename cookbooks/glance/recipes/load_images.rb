@@ -21,9 +21,13 @@ if image_list then
           sleep 10 
           [ "$COUNT" -eq "36" ] && break
         done
-        if curl #{img[:url]} | glance add name="#{img[:name]}" disk_format=#{img[:disk_format]} container_format=#{img[:container_format]} is_public=True; then
+        DIR=$(mktemp -d)
+        curl #{img[:url]} -o $DIR/image
+        if glance add name="#{img[:name]}" disk_format=#{img[:disk_format]} container_format=#{img[:container_format]} is_public=True < $DIR/image; then
             touch /var/lib/glance/chef_images_loaded
         fi
+        rm $DIR/image
+        rmdir $DIR
       EOH
       not_if do File.exists?("/var/lib/glance/chef_images_loaded") end
     end
