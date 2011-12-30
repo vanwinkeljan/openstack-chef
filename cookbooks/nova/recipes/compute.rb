@@ -13,11 +13,6 @@ package "nova-compute" do
   version package_version if package_version
 end
 
-template "/etc/init/nova-compute.conf" do
-  source "nova-compute.conf"
-  mode "0644"
-end
-
 if node[:nova][:connection_type] and node[:nova][:connection_type] == "xenapi" then
 
   # FIXME: create a python XenAPI package
@@ -65,11 +60,13 @@ elsif not node[:nova][:connection_type] or node[:nova][:connection_type] == "lib
 end
 
 service "nova-compute" do
-  restart_command "stop nova-compute; start nova-compute"
-  stop_command "stop nova-compute"
-  start_command "start nova-compute"
-  status_command "status nova-compute | cut -d' ' -f2 | cut -d'/' -f1 | grep start"
+  if (platform?("ubuntu") && node.platform_version.to_f >= 10.04)
+    restart_command "stop nova-compute; start nova-compute"
+    stop_command "stop nova-compute"
+    start_command "start nova-compute"
+    status_command "status nova-compute | cut -d' ' -f2 | cut -d'/' -f1 | grep start"
+  end
   supports :status => true, :restart => true
   action :start
-  subscribes :restart, resources(:template => ["/etc/nova/nova.conf", "/etc/init/nova-compute.conf"])
+  subscribes :restart, resources(:template => ["/etc/nova/nova.conf"])
 end
