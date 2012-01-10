@@ -21,10 +21,20 @@ bind_port = <%= node[:glance][:api_bind_port] %>
 log_file = <%= node[:glance][:log_dir] %>/api.log
 
 # Send logs to syslog (/dev/log) instead of to file specified by `log_file`
-use_syslog = <%= node[:glance][:use_syslog] %>
 
 # Backlog requests when creating socket
 backlog = <%= node[:glance][:backlog] %>
+
+# ================= Syslog Options ============================
+
+# Send logs to syslog (/dev/log) instead of to file specified
+# by `log_file`
+use_syslog = <%= node[:glance][:use_syslog] %>
+
+# Facility to use. If unset defaults to LOG_USER.
+<% if node[:glance][:syslog_log_facility] then %>
+syslog_log_facility = <%= node[:glance][:syslog_log_facility] %>
+<% end %>
 
 # ================= SSL Options ===============================
 
@@ -38,6 +48,15 @@ cert_file = <%= node[:glance][:cert_file] %>
 key_file = <%= node[:glance][:key_file] %>
 <% end %>
 
+# ================= Security Options ==========================
+
+# AES key for encrypting store 'location' metadata, including
+# -- if used -- Swift or S3 credentials
+# Should be set to a random string of length 16, 24 or 32 bytes
+<% if node[:glance][:metadata_encryption_key] then %>
+metadata_encryption_key = <%= node[:glance][:syslog_log_facility] %>
+<% end %>
+
 # ============ Registry Options ===============================
 
 # Address to find the registry server
@@ -45,6 +64,10 @@ registry_host = <%= node[:glance][:registry_host] %>
 
 # Port the registry server is listening on
 registry_port = <%= node[:glance][:registry_bind_port] %>
+
+# What protocol to use when connecting to the registry server?
+# Set to https for secure HTTP communication
+registry_client_protocol = <%= node[:glance][:registry_client_protocol] %>
 
 # The path to the key file to use in SSL connections to the
 # registry server, if any. Alternately, you may set the
@@ -83,6 +106,7 @@ rabbit_use_ssl = <%= node[:glance][:rabbit_use_ssl] %>
 rabbit_userid = <%= node[:glance][:rabbit_userid] %>
 rabbit_password = <%= node[:glance][:rabbit_password] %>
 rabbit_virtual_host = <%= node[:glance][:rabbit_virtual_host] %>
+rabbit_notification_exchange = <%= node[:glance][:rabbit_notification_exchange] %>
 rabbit_notification_topic = <%= node[:glance][:rabbit_notification_topic] %>
 
 # ============ Filesystem Store Options ========================
@@ -94,9 +118,14 @@ filesystem_store_datadir = <%= node[:glance][:filesystem_store_datadir] %>
 # ============ Swift Store Options =============================
 
 # Address where the Swift authentication service lives
+# Valid schemes are 'http://' and 'https://'
+# If no scheme specified,  default to 'https://'
 swift_store_auth_address = <%= node[:glance][:swift_store_auth_address] %>
 
 # User to authenticate against the Swift authentication service
+# If you use Swift authentication service, set it to 'account':'user'
+# where 'account' is a Swift storage account and 'user'
+# is a user in that account
 swift_store_user = <%= node[:glance][:swift_store_user] %>
 
 # Auth key for the user authenticating against the
@@ -132,6 +161,8 @@ swift_enable_snet = <%= node[:glance][:swift_enable_snet] %>
 # ============ S3 Store Options =============================
 
 # Address where the S3 authentication service lives
+# Valid schemes are 'http://' and 'https://'
+# If no scheme specified,  default to 'http://'
 s3_store_host = <%= node[:glance][:s3_store_host] %>
 
 # User to authenticate against the S3 authentication service
@@ -151,6 +182,13 @@ s3_store_bucket = <%= node[:glance][:s3_store_bucket] %>
 
 # Do we create the bucket if it does not exist?
 s3_store_create_bucket_on_put = <%= node[:glance][:s3_store_create_bucket_on_put] %>
+
+# When sending images to S3, the data will first be written to a
+# temporary buffer on disk. By default the platform's temporary directory
+# will be used. If required, an alternative directory can be specified here.
+<% if node[:glance][:s3_store_object_buffer_dir] then %>
+s3_store_object_buffer_dir = <%= node[:glance][:s3_store_object_buffer_dir] %>
+<% end %>
 
 # ============ RBD Store Options =============================
 
@@ -193,6 +231,18 @@ pipeline = versionnegotiation context <%= @cache %> <%= @cachemanage %> apiv1app
 <% elsif node[:glance][:auth_type] == "keystone" %>
 pipeline = versionnegotiation authtoken auth-context <%= @cache %> <%= @cachemanage %> apiv1app
 <% end %>
+# NOTE: use the following pipeline for keystone
+# pipeline = versionnegotiation authtoken auth-context apiv1app
+
+# To enable transparent caching of image files replace pipeline with below:
+# pipeline = versionnegotiation context cache apiv1app
+# NOTE: use the following pipeline for keystone auth (with caching)
+# pipeline = versionnegotiation authtoken auth-context cache apiv1app
+
+# To enable Image Cache Management API replace pipeline with below:
+# pipeline = versionnegotiation context cachemanage apiv1app
+# NOTE: use the following pipeline for keystone auth (with caching)
+# pipeline = versionnegotiation authtoken auth-context cachemanage apiv1app
 
 [app:apiv1app]
 paste.app_factory = glance.common.wsgi:app_factory

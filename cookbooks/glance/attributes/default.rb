@@ -15,6 +15,7 @@ default[:glance][:api_bind_port] = "9292"
 default[:glance][:registry_host] = ipaddress
 default[:glance][:registry_bind_host] = "0.0.0.0"
 default[:glance][:registry_bind_port] = "9191"
+default[:glance][:registry_client_protocol] = "http"
 
 # Backlog requests when creating socket
 default[:glance][:backlog] = "4096"
@@ -73,6 +74,7 @@ default[:glance][:rabbit_use_ssl] = "False"
 default[:glance][:rabbit_userid] = "guest"
 default[:glance][:rabbit_password] = "guest"
 default[:glance][:rabbit_virtual_host] = "/"
+default[:glance][:rabbit_notification_exchange] = "glance"
 default[:glance][:rabbit_notification_topic] = "glance_notifications"
 
 # Example Attributes for the glance::load_images recipe:
