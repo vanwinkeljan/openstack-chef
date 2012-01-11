@@ -5,11 +5,11 @@ define :create_instance do
 hostname=params[:name]
 
 image_path=params[:image_path]
-if image_path.blank? then
+if not image_path or image_path.blank? then
   image_path=node[:xenserver][:image_path]
 end
 xva_image_url=params[:xva_image_url]
-if xva_image_url.blank? then
+if not xva_image_url or xva_image_url.blank? then
   xva_image_url=node[:xenserver][:xva_image_url]
 end
 
