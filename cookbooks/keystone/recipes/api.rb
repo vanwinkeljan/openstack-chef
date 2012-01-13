@@ -4,9 +4,12 @@
 #
 #
 
-package "keystone" do
-  options "--force-yes"
-  action :install
+user "keystone" do
+  shell "/bin/bash"
+end
+
+group "keystone" do
+  members ["keystone"]
 end
 
 directory File.dirname(node[:keystone][:config_file]) do
@@ -44,10 +47,10 @@ template node[:keystone][:log_config] do
   mode 0644
 end
 
-#This needs to be addressed: https://bugs.launchpad.net/keystone/+bug/908296
-#execute "keystone-manage database sync" do
-#  user "keystone"
-#end
+package "keystone" do
+  options "--force-yes -o Dpkg::Options::=\"--force-confdef\""
+  action :install
+end
 
 keystone_svc_name="keystone"
 service keystone_svc_name do
