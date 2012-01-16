@@ -71,6 +71,9 @@ add_flag(:notification_driver)
 add_boolean_flag(:allow_ec2_admin_api)
 add_flag(:firewall_driver)
 add_boolean_flag(:allow_same_net_traffic)
+add_flag(:scheduler_driver)
+add_flag(:default_host_filters)
+add_flag(:least_cost_functions)
 
 %>
 <% @flags.each do |flag| %>
@@ -85,3 +88,6 @@ add_boolean_flag(:allow_same_net_traffic)
 --rabbit_password=<%= @rabbit_settings[:password] %>
 --rabbit_virtual_host=<%= @rabbit_settings[:vhost] %>
 <% end %>
+<% if @extra_config then @extra_config.each do |key,value| %>
+--<%= key %>=<%= value %>
+<% end end %>

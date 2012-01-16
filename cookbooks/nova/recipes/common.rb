@@ -97,6 +97,7 @@ template "/etc/nova/nova.conf" do
   mode 0644
   variables(
     :sql_connection => sql_connection,
-    :rabbit_settings => rabbit_settings
+    :rabbit_settings => rabbit_settings,
+    :extra_config => node[:nova][:extra_config]
   )
 end
