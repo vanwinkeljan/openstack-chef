@@ -89,14 +89,13 @@ sql_idle_timeout = <%= node[:keystone][:sql_idle_timeout] %>
 
 [pipeline:admin]
 pipeline =
-    urlrewritefilter
+    urlnormalizer
     admin_api
 
 [pipeline:keystone-legacy-auth]
 pipeline =
-    urlrewritefilter
+    urlnormalizer
     legacy_auth
-    RAX-KEY-extension
     service_api
 
 [app:service_api]
@@ -105,14 +104,11 @@ paste.app_factory = keystone.server:service_app_factory
 [app:admin_api]
 paste.app_factory = keystone.server:admin_app_factory
 
-[filter:urlrewritefilter]
-paste.filter_factory = keystone.middleware.url:filter_factory
+[filter:urlnormalizer]
+paste.filter_factory = keystone.frontends.normalizer:filter_factory
 
 [filter:legacy_auth]
 paste.filter_factory = keystone.frontends.legacy_token_auth:filter_factory
-
-[filter:RAX-KEY-extension]
-paste.filter_factory = keystone.contrib.extensions.service.raxkey.frontend:filter_factory
 
 [filter:debug]
 paste.filter_factory = keystone.common.wsgi:debug_filter_factory
