@@ -43,6 +43,45 @@ else
   sql_connection = "sqlite:////var/lib/glance/glance.sqlite"
 end
 
+paste_vars = {
+    :service_protocol => node[:glance][:keystone_service_protocol],
+    :service_host => node[:glance][:keystone_service_host],
+    :service_port => node[:glance][:keystone_service_port],
+    :auth_host => node[:glance][:keystone_auth_host],
+    :auth_port => node[:glance][:keystone_auth_port],
+    :auth_protocol => node[:glance][:keystone_auth_protocol],
+    :auth_uri => node[:glance][:keystone_auth_uri],
+    :admin_token => node[:glance][:keystone_admin_token]
+}
+
+package "glance-registry" do
+  action :install
+end
+
+if (platform?("ubuntu") && node.platform_version.to_f >= 10.04)
+  service "glance-registry" do
+    stop_command "stop glance-registry"
+    status_command "status glance-registry | cut -d' ' -f2 | cut -d'/' -f1 | grep start"
+    action :nothing
+    subscribes :stop, resources(:package => "glance-registry"), :immediately
+  end
+end
+
+generate_paste_template "/etc/glance/glance-registry-paste.ini.template" do
+  source node[:glance][:registry_paste_config_file]
+  package "glance-registry"
+  variables(paste_vars)
+end
+
+template node[:glance][:registry_paste_config_file] do
+  source "/etc/glance/glance-registry-paste.ini.template"
+  owner "glance"
+  group "root"
+  mode 0644
+  local true
+  variables(paste_vars)
+end
+
 template node[:glance][:registry_config_file] do
   source "glance-registry.conf.erb"
   owner "glance"
@@ -51,11 +90,6 @@ template node[:glance][:registry_config_file] do
   variables(
     :sql_connection => sql_connection
   )
-end
-
-package "glance-registry" do
-  options "--force-yes -o Dpkg::Options::=\"--force-confdef\""
-  action :install
 end
 
 service "glance-registry" do

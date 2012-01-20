@@ -55,34 +55,5 @@ cert_file = <%= node[:glance][:cert_file] %>
 key_file = <%= node[:glance][:key_file] %>
 <% end %>
 
-[pipeline:glance-registry]
-<% if node[:glance][:auth_type] == "noauth" %>
-pipeline = context registryapp
-<% elsif node[:glance][:auth_type] == "keystone" %>
-pipeline = authtoken auth-context registryapp
-<% end %>
-
-[app:registryapp]
-paste.app_factory = glance.common.wsgi:app_factory
-glance.app_factory = glance.registry.api.v1:API
-
-[filter:context]
-context_class = glance.registry.context.RequestContext
-paste.filter_factory = glance.common.wsgi:filter_factory
-glance.filter_factory = glance.common.context:ContextMiddleware
-
-[filter:authtoken]
-paste.filter_factory = keystone.middleware.auth_token:filter_factory
-service_protocol = <%= node[:glance][:keystone_service_protocol] %>
-service_host = <%= node[:glance][:keystone_service_host] %>
-service_port = <%= node[:glance][:keystone_service_port] %>
-auth_host = <%= node[:glance][:keystone_auth_host] %>
-auth_port = <%= node[:glance][:keystone_auth_port] %>
-auth_protocol = <%= node[:glance][:keystone_auth_protocol] %>
-auth_uri = <%= node[:glance][:keystone_auth_uri] %>
-admin_token = <%= node[:glance][:keystone_admin_token] %>
-
-[filter:auth-context]
-context_class = glance.registry.context.RequestContext
-paste.filter_factory = glance.common.wsgi:filter_factory
-glance.filter_factory = keystone.middleware.glance_auth_token:KeystoneContextMiddleware
+[paste_deploy]
+flavor = <%= node[:glance][:registry_flavor] %>

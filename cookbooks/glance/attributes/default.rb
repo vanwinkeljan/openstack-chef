@@ -1,6 +1,10 @@
 default[:glance][:api_config_file]="/etc/glance/glance-api.conf"
+default[:glance][:api_paste_config_file]="/etc/glance/glance-api-paste.ini"
+default[:glance][:api_flavor]="keystone+cachemanagement"
 default[:glance][:cache_config_file]="/etc/glance/glance-cache.conf"
 default[:glance][:registry_config_file]="/etc/glance/glance-registry.conf"
+default[:glance][:registry_paste_config_file]="/etc/glance/glance-registry-paste.ini"
+default[:glance][:registry_flavor]="keystone"
 default[:glance][:scrubber_config_file]="/etc/glance/glance-scrubber.conf"
 default[:glance][:log_dir]="/var/log/glance"
 default[:glance][:use_syslog]="False"
@@ -38,12 +42,7 @@ default[:glance][:limit_param_default] = "25"
 default[:glance][:default_store] = "file"
 default[:glance][:filesystem_store_datadir] = "/var/lib/glance/images"
 
-default[:glance][:cache] = "True"
-default[:glance][:cache_management] = "True"
 default[:glance][:image_cache_dir] = "/var/lib/glance/image-cache"
-
-#auth type (noauth or keystone)
-default[:glance][:auth_type] = "noauth"
 
 #keystone settings
 default[:glance][:keystone_service_protocol] = "http"
