@@ -31,7 +31,7 @@ args=(('localhost', handlers.SYSLOG_UDP_PORT), handlers.SysLogHandler.LOG_USER)
 class=FileHandler
 level=DEBUG
 formatter=normal_with_name
-args=('keystone.log', 'w')
+args=('<%= node[:keystone][:log_file] %>', 'w')
 
 [handler_devel]
 class=StreamHandler
