@@ -63,7 +63,7 @@ paste.filter_factory = nova.api.ec2:RequestLogging.factory
 paste.filter_factory = nova.api.ec2:Lockout.factory
 
 [filter:totoken]
-paste.filter_factory = keystone.middleware.ec2_token:EC2Token.factory
+paste.filter_factory = nova.api.ec2:EC2Token.factory
 
 [filter:ec2noauth]
 paste.filter_factory = nova.api.ec2:NoAuth.factory
@@ -102,34 +102,21 @@ use = call:nova.api.openstack.urlmap:urlmap_factory
 
 [pipeline:openstack_compute_api_v2]
 <% if node[:nova][:auth_type] == "noauth" %>
-pipeline = 
-    faultwrap 
-    noauth 
-    ratelimit 
-    serialize 
-    compute_extensions 
-    osapi_compute_app_v2
+pipeline = faultwrap noauth ratelimit osapi_compute_app_v2
 <% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = 
-    faultwrap 
-    auth
-    ratelimit 
-    serialize 
-    compute_extensions 
-    osapi_compute_app_v2
+pipeline = faultwrap auth ratelimit osapi_compute_app_v2
 <% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = 
-    faultwrap 
-    authtoken 
-    keystonecontext 
-    ratelimit 
-    serialize 
-    compute_extensions 
-    osapi_compute_app_v2
+pipeline = faultwrap authtoken keystonecontext ratelimit osapi_compute_app_v2
 <% end %>
 
 [pipeline:openstack_volume_api_v1]
-pipeline = faultwrap noauth ratelimit serialize volume_extensions osapi_volume_app_v1
+<% if node[:nova][:auth_type] == "noauth" %>
+pipeline = faultwrap noauth ratelimit osapi_volume_app_v1
+<% elsif node[:nova][:auth_type] == "deprecated" %>
+pipeline = faultwrap auth ratelimit osapi_volume_app_v1
+<% elsif node[:nova][:auth_type] == "keystone" %>
+pipeline = faultwrap authtoken keystonecontext ratelimit osapi_volume_app_v1
+<% end %>
 
 [filter:faultwrap]
 paste.filter_factory = nova.api.openstack:FaultWrapper.factory
@@ -143,20 +130,8 @@ paste.filter_factory = nova.api.openstack.auth:NoAuthMiddleware.factory
 [filter:ratelimit]
 paste.filter_factory = nova.api.openstack.compute.limits:RateLimitingMiddleware.factory
 
-[filter:serialize]
-paste.filter_factory = nova.api.openstack.wsgi:LazySerializationMiddleware.factory
-
-[filter:compute_extensions]
-paste.filter_factory = nova.api.openstack.compute.extensions:ExtensionMiddleware.factory
-
-[filter:volume_extensions]
-paste.filter_factory = nova.api.openstack.volume.extensions:ExtensionMiddleware.factory
-
 [app:osapi_compute_app_v2]
 paste.app_factory = nova.api.openstack.compute:APIRouter.factory
-
-[app:oscomputeversionapp]
-paste.app_factory = nova.api.openstack.compute.versions:Versions.factory
 
 [pipeline:oscomputeversions]
 pipeline = faultwrap oscomputeversionapp
@@ -164,18 +139,21 @@ pipeline = faultwrap oscomputeversionapp
 [app:osapi_volume_app_v1]
 paste.app_factory = nova.api.openstack.volume:APIRouter.factory
 
-[app:osvolumeversionapp]
-paste.app_factory = nova.api.openstack.volume.versions:Versions.factory
+[app:oscomputeversionapp]
+paste.app_factory = nova.api.openstack.compute.versions:Versions.factory
 
 [pipeline:osvolumeversions]
 pipeline = faultwrap osvolumeversionapp
+
+[app:osvolumeversionapp]
+paste.app_factory = nova.api.openstack.volume.versions:Versions.factory
 
 ##########
 # Shared #
 ##########
 
 [filter:keystonecontext]
-paste.filter_factory = keystone.middleware.nova_keystone_context:NovaKeystoneContext.factory
+paste.filter_factory = nova.api.auth:NovaKeystoneContext.factory
 
 [filter:authtoken]
 paste.filter_factory = keystone.middleware.auth_token:filter_factory
