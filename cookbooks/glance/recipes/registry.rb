@@ -76,7 +76,7 @@ end
 template node[:glance][:registry_paste_config_file] do
   source "/etc/glance/glance-registry-paste.ini.template"
   owner "glance"
-  group "root"
+  group "glance"
   mode 0644
   local true
   variables(paste_vars)
@@ -85,7 +85,7 @@ end
 template node[:glance][:registry_config_file] do
   source "glance-registry.conf.erb"
   owner "glance"
-  group "root"
+  group "glance"
   mode 0644
   variables(
     :sql_connection => sql_connection

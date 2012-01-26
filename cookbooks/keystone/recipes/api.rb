@@ -14,21 +14,21 @@ end
 
 directory File.dirname(node[:keystone][:config_file]) do
   owner "keystone"
-  group "root"
+  group "keystone"
   mode "0755"
   action :create
 end
 
 directory File.dirname(node[:keystone][:db_file]) do
   owner "keystone"
-  group "root"
+  group "keystone"
   mode "0755"
   action :create
 end
 
 directory File.dirname(node[:keystone][:log_config]) do
   owner "keystone"
-  group "root"
+  group "keystone"
   mode "0755"
   action :create
 end
@@ -36,14 +36,14 @@ end
 template node[:keystone][:config_file] do
   source "keystone.conf.erb"
   owner "keystone"
-  group "root"
+  group "keystone"
   mode 0644
 end
 
 template node[:keystone][:log_config] do
   source "logging.cnf.erb"
   owner "keystone"
-  group "root"
+  group "keystone"
   mode 0644
 end
 

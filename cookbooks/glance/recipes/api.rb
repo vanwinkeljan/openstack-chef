@@ -50,7 +50,7 @@ end
 template node[:glance][:api_paste_config_file] do
   source "/etc/glance/glance-api-paste.ini.template"
   owner "glance"
-  group "root"
+  group "glance"
   mode "0644"
   local true
   variables(paste_vars)
@@ -59,34 +59,34 @@ end
 template node[:glance][:api_config_file] do
   source "glance-api.conf.erb"
   owner "glance"
-  group "root"
+  group "glance"
   mode 0644
 end
 
 template node[:glance][:cache_config_file] do
   source "glance-cache.conf.erb"
   owner "glance"
-  group "root"
+  group "glance"
   mode 0644
 end
 
 template node[:glance][:scrubber_config_file] do
   source "glance-scrubber.conf.erb"
   owner "glance"
-  group "root"
+  group "glance"
   mode 0644
 end
 
 file "/var/log/glance/api.log" do
   owner "glance"
-  group "root"
+  group "glance"
   mode "0644"
   action :create
 end
 
 directory node[:glance][:filesystem_store_datadir] do
   owner "glance"
-  group "root"
+  group "glance"
   mode "0755"
   action :create
 end
@@ -95,7 +95,7 @@ end
 
   directory "#{node[:glance][:image_cache_dir]}/#{cache_dir}" do
     owner "glance"
-    group "root"
+    group "glance"
     mode "0755"
     action :create
   end
