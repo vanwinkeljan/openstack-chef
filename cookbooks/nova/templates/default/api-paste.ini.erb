@@ -33,7 +33,6 @@ paste.app_factory = nova.api.metadata.handler:MetadataRequestHandler.factory
 [composite:ec2]
 use = egg:Paste#urlmap
 /services/Cloud: ec2cloud
-/services/Admin: ec2admin
 
 [pipeline:ec2cloud]
 <% if node[:nova][:auth_type] == "noauth" %>
@@ -42,15 +41,6 @@ pipeline = ec2faultwrap logrequest ec2noauth cloudrequest authorizer ec2executor
 pipeline = ec2faultwrap logrequest authenticate cloudrequest authorizer ec2executor
 <% elsif node[:nova][:auth_type] == "keystone" %>
 pipeline = ec2faultwrap logrequest totoken authtoken keystonecontext cloudrequest authorizer ec2executor
-<% end %>
-
-[pipeline:ec2admin]
-<% if node[:nova][:auth_type] == "noauth" %>
-pipeline = ec2faultwrap logrequest ec2noauth adminrequest authorizer ec2executor
-<% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = ec2faultwrap logrequest authenticate adminrequest authorizer ec2executor
-<% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = ec2faultwrap logrequest totoken authtoken keystonecontext adminrequest authorizer ec2executor
 <% end %>
 
 [filter:ec2faultwrap]
