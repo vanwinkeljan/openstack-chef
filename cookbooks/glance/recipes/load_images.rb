@@ -50,8 +50,8 @@ if tty_linux_image and not tty_linux_image.empty? then
         [ "$COUNT" -eq "36" ] && break
       done
       curl #{tty_linux_image} | tar xvz -C /tmp/
-      ARI_ID=`glance add name="ari-tty" type="ramdisk" disk_format="ari" container_format="ari" is_public=true < /tmp/tty_linux/ramdisk | sed 's/.*\: //g'`
-      AKI_ID=`glance add name="aki-tty" type="kernel" disk_format="aki" container_format="aki" is_public=true < /tmp/tty_linux/kernel | sed 's/.*\: //g'`
+      ARI_ID=`glance add name="ari-tty" type="ramdisk" disk_format="ari" container_format="ari" is_public=true < /tmp/tty_linux/ramdisk | tail -n 1 | sed 's/.*\: //g'`
+      AKI_ID=`glance add name="aki-tty" type="kernel" disk_format="aki" container_format="aki" is_public=true < /tmp/tty_linux/kernel | tail -n 1 | sed 's/.*\: //g'`
       if glance add name="ami-tty" type="kernel" disk_format="ami" container_format="ami" ramdisk_id="$ARI_ID" kernel_id="$AKI_ID" is_public=true < /tmp/tty_linux/image; then
           touch /var/lib/glance/chef_images_loaded
       fi
