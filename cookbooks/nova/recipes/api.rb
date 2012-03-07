@@ -37,8 +37,7 @@ unless Chef::Config[:solo]
   end
 end
 
-#FIXME: This should come out if/when we require python-keystone in api package
-if node[:nova][:auth_type] and node[:nova][:auth_type] == "keystone" then
+if node[:nova][:auth_strategy] and node[:nova][:auth_strategy] == "keystone" then
   package "python-keystone"
 end
 

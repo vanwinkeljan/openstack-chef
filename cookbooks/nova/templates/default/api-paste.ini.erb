@@ -34,14 +34,11 @@ paste.app_factory = nova.api.metadata.handler:MetadataRequestHandler.factory
 use = egg:Paste#urlmap
 /services/Cloud: ec2cloud
 
-[pipeline:ec2cloud]
-<% if node[:nova][:auth_type] == "noauth" %>
-pipeline = ec2faultwrap logrequest ec2noauth cloudrequest authorizer ec2executor
-<% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = ec2faultwrap logrequest authenticate cloudrequest authorizer ec2executor
-<% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = ec2faultwrap logrequest totoken authtoken keystonecontext cloudrequest authorizer ec2executor
-<% end %>
+[composite:ec2cloud]
+use = call:nova.api.auth:pipeline_factory
+noauth = ec2faultwrap logrequest ec2noauth cloudrequest authorizer validator ec2executor
+deprecated = ec2faultwrap logrequest authenticate cloudrequest authorizer validator ec2executor
+keystone = ec2faultwrap logrequest ec2keystoneauth cloudrequest authorizer validator ec2executor
 
 [filter:ec2faultwrap]
 paste.filter_factory = nova.api.ec2:FaultWrapper.factory
@@ -55,6 +52,9 @@ paste.filter_factory = nova.api.ec2:Lockout.factory
 [filter:totoken]
 paste.filter_factory = nova.api.ec2:EC2Token.factory
 
+[filter:ec2keystoneauth]
+paste.filter_factory = nova.api.ec2:EC2KeystoneAuth.factory
+
 [filter:ec2noauth]
 paste.filter_factory = nova.api.ec2:NoAuth.factory
 
@@ -65,12 +65,11 @@ paste.filter_factory = nova.api.ec2:Authenticate.factory
 controller = nova.api.ec2.cloud.CloudController
 paste.filter_factory = nova.api.ec2:Requestify.factory
 
-[filter:adminrequest]
-controller = nova.api.ec2.admin.AdminController
-paste.filter_factory = nova.api.ec2:Requestify.factory
-
 [filter:authorizer]
 paste.filter_factory = nova.api.ec2:Authorizer.factory
+
+[filter:validator]
+paste.filter_factory = nova.api.ec2:Validator.factory
 
 [app:ec2executor]
 paste.app_factory = nova.api.ec2:Executor.factory
@@ -90,23 +89,17 @@ use = call:nova.api.openstack.urlmap:urlmap_factory
 /: osvolumeversions
 /v1: openstack_volume_api_v1
 
-[pipeline:openstack_compute_api_v2]
-<% if node[:nova][:auth_type] == "noauth" %>
-pipeline = faultwrap noauth ratelimit osapi_compute_app_v2
-<% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = faultwrap auth ratelimit osapi_compute_app_v2
-<% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = faultwrap authtoken keystonecontext ratelimit osapi_compute_app_v2
-<% end %>
+[composite:openstack_compute_api_v2]
+use = call:nova.api.auth:pipeline_factory
+noauth = faultwrap noauth ratelimit osapi_compute_app_v2
+deprecated = faultwrap auth ratelimit osapi_compute_app_v2
+keystone = faultwrap authtoken keystonecontext ratelimit osapi_compute_app_v2
 
-[pipeline:openstack_volume_api_v1]
-<% if node[:nova][:auth_type] == "noauth" %>
-pipeline = faultwrap noauth ratelimit osapi_volume_app_v1
-<% elsif node[:nova][:auth_type] == "deprecated" %>
-pipeline = faultwrap auth ratelimit osapi_volume_app_v1
-<% elsif node[:nova][:auth_type] == "keystone" %>
-pipeline = faultwrap authtoken keystonecontext ratelimit osapi_volume_app_v1
-<% end %>
+[composite:openstack_volume_api_v1]
+use = call:nova.api.auth:pipeline_factory
+noauth = faultwrap noauth ratelimit osapi_volume_app_v1
+deprecated = faultwrap auth ratelimit osapi_volume_app_v1
+keystone = faultwrap authtoken keystonecontext ratelimit osapi_volume_app_v1
 
 [filter:faultwrap]
 paste.filter_factory = nova.api.openstack:FaultWrapper.factory

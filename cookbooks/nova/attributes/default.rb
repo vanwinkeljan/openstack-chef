@@ -49,14 +49,12 @@ default[:nova][:dhcpbridge] = "/usr/bin/nova-dhcpbridge"
 default[:nova][:logdir] = "/var/log/nova"
 default[:nova][:state_path] = "/var/lib/nova"
 default[:nova][:verbose] = true
+default[:nova][:auth_strategy] = "noauth"
 
 # Firewall driver for xenapi
 if node[:nova] and node[:nova][:connection_type]  and node[:nova][:connection_type] == "xenapi"
   default[:nova][:firewall_driver] = 'nova.virt.xenapi.firewall.Dom0IptablesFirewallDriver'
 end
-
-#auth type
-default[:nova][:auth_type] = "noauth"
 
 #keystone settings
 default[:nova][:keystone_service_protocol] = "http"
