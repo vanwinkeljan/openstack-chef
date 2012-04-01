@@ -50,7 +50,7 @@ end
 
 o.run_action(:install)
 
-r = gem_package "mysql" do
+r = package "libmysql-ruby1.8" do
   action :nothing
 end
 

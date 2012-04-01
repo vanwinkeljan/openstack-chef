@@ -24,7 +24,7 @@ include_recipe "apt"
   end
 end
 
-execute "truncate -s 10G /root/nova-volumes" do
+execute "truncate -s #{node[:nova][:vg_file_size]} /root/nova-volumes" do
   user "root"
   not_if { File.exists?("/root/nova-volumes/") }
 end

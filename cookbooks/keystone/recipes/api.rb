@@ -4,6 +4,43 @@
 #
 #
 
+sql_connection = nil
+if node[:keystone][:mysql]
+  Chef::Log.info("Using mysql")
+  package "python-mysqldb"
+  mysqls = nil
+
+  unless Chef::Config[:solo]
+    mysqls = search(:node, "recipes:keystone\\:\\:mysql")
+  end
+  if mysqls and mysqls[0]
+    mysql = mysqls[0]
+    Chef::Log.info("Mysql server found at #{mysql[:mysql][:bind_address]}")
+  else
+    mysql = node
+    Chef::Log.info("Using local mysql at  #{mysql[:mysql][:bind_address]}")
+  end
+  sql_connection = "mysql://#{mysql[:keystone][:db][:user]}:#{mysql[:keystone][:db][:password]}@#{mysql[:mysql][:bind_address]}/#{mysql[:keystone][:db][:database]}"
+elsif node[:keystone][:postgresql]
+  Chef::Log.info("Using postgresql")
+  postgresqls = nil
+
+  unless Chef::Config[:solo]
+    postgresqls = search(:node, "recipes:keystone\\:\\:postgresql")
+  end
+  if postgresqls and postgresqls[0]
+    postgresql = postgresqls[0]
+    Chef::Log.info("PostgreSQL server found at #{postgresql[:ipaddress]}")
+  else
+    postgresql = node
+    Chef::Log.info("Using local PostgreSQL at #{postgresql[:ipaddress]}")
+  end
+  sql_connection = "postgresql://#{postgresql[:keystone][:db][:user]}:#{postgresql[:keystone][:db][:password]}@#{postgresql[:ipaddress]}/#{postgresql[:keystone][:db][:database]}"
+else
+  # default to sqlite
+  sql_connection = "sqlite:////var/lib/keystone/keystone.sqlite"
+end
+
 user "keystone" do
   shell "/bin/bash"
 end
@@ -38,6 +75,9 @@ template node[:keystone][:config_file] do
   owner "keystone"
   group "keystone"
   mode 0644
+  variables(
+    :sql_connection => sql_connection
+  )
 end
 
 template node[:keystone][:log_config] do

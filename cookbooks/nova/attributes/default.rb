@@ -56,6 +56,10 @@ if node[:nova] and node[:nova][:connection_type]  and node[:nova][:connection_ty
   default[:nova][:firewall_driver] = 'nova.virt.xenapi.firewall.Dom0IptablesFirewallDriver'
 end
 
+# File Backe LVM Options
+
+default[:nova][:vg_file_size] = "10G"
+
 #keystone settings
 default[:nova][:keystone_service_protocol] = "http"
 default[:nova][:keystone_service_host] = "127.0.0.1"
