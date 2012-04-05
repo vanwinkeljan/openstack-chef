@@ -5,6 +5,7 @@ action :add do
     if new_resource.key && new_resource.keyserver
       e = execute "install-key #{new_resource.key}" do
         command "apt-key adv --keyserver #{new_resource.keyserver} --recv #{new_resource.key}"
+        environment new_resource.apt_key_env
         action :run
       end
       e.run_action(:run)
@@ -17,6 +18,7 @@ action :add do
       end
       execute "install-key #{key_name}" do
         command "apt-key add #{Chef::Config[:file_cache_path]}/#{key_name}"
+        environment node[:apt][:apt_key_env]
         action :run
       end
     end

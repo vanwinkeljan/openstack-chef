@@ -1,4 +1,6 @@
-export SERVICE_TOKEN=<%= node[:keystone][:admin_token] %>
-export SERVICE_ENDPOINT=<%= node[:keystone][:service_endpoint] %>
-
+export OS_USERNAME=<%= @creds[:user] %>
+export OS_TENANT_NAME=<%= @creds[:tenant] %>
+export OS_PASSWORD=<%= @creds[:pass] %>
+export OS_AUTH_URL=<%= @creds[:auth_url] %>
+export OS_REGION_NAME=<%= @creds[:region] %>
 

@@ -6,6 +6,12 @@
 
 include_recipe "#{@cookbook_name}::common"
 
+env_filter = ''
+if node[:app_environment]
+  env_filter = " AND app_environment:#{node[:app_environment]}"
+end
+
+
 # Locate glance registry and retrieve it's IP
 unless Chef::Config[:solo]
   registries = search(:node, "recipes:glance\\:\\:registry")
@@ -16,6 +22,30 @@ end
 
 Chef::Log.info("Using glance registry at #{node[:glance][:registry_host]}")
 
+rabbits = nil
+unless Chef::Config[:solo]
+  rabbits = search(:node, "recipes:glance\\:\\:rabbit#{env_filter}")
+end
+if rabbits and rabbits[0]
+  rabbit = rabbits[0]
+  Chef::Log.info("Rabbit server found at #{rabbit[:rabbitmq][:address]}")
+else
+  rabbit = node
+  Chef::Log.info("Using local rabbit at #{rabbit[:rabbitmq][:address]}")
+end
+
+rabbit_settings = {
+  :address => rabbit[:rabbitmq][:address],
+  :port => rabbit[:rabbitmq][:port],
+  :user => rabbit[:glance][:rabbit][:user],
+  :password => rabbit[:glance][:rabbit][:password],
+  :vhost => rabbit[:glance][:rabbit][:vhost],
+  :notification_exchange => rabbit[:glance][:rabbit][:notification_exchange],
+  :notification_topic => rabbit[:glance][:rabbit][:notification_topic],
+  :notifier_strategy => rabbit[:glance][:rabbit][:notifier_strategy],
+  :use_ssl => rabbit[:glance][:rabbit][:use_ssl]
+}
+
 paste_vars = {
     :service_protocol => node[:glance][:keystone_service_protocol],
     :service_host => node[:glance][:keystone_service_host],
@@ -24,7 +54,9 @@ paste_vars = {
     :auth_port => node[:glance][:keystone_auth_port],
     :auth_protocol => node[:glance][:keystone_auth_protocol],
     :auth_uri => node[:glance][:keystone_auth_uri],
-    :admin_token => node[:glance][:keystone_admin_token]
+    :admin_tenant_name => node[:glance][:keystone_admin_tenant_name],
+    :admin_user => node[:glance][:keystone_admin_user],
+    :admin_password => node[:glance][:keystone_admin_password]
 }
 
 package "glance-api" do
@@ -61,6 +93,7 @@ template node[:glance][:api_config_file] do
   owner "glance"
   group "glance"
   mode 0644
+  variables(:rabbit_settings => rabbit_settings)
 end
 
 template node[:glance][:cache_config_file] do

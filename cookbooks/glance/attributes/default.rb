@@ -1,3 +1,5 @@
+include_attribute "keystone"
+
 default[:glance][:api_config_file]="/etc/glance/glance-api.conf"
 default[:glance][:api_paste_config_file]="/etc/glance/glance-api-paste.ini"
 default[:glance][:api_flavor]="keystone+cachemanagement"
@@ -46,13 +48,16 @@ default[:glance][:image_cache_dir] = "/var/lib/glance/image-cache"
 
 #keystone settings
 default[:glance][:keystone_service_protocol] = "http"
-default[:glance][:keystone_service_host] = "127.0.0.1"
-default[:glance][:keystone_service_port] = "5000"
-default[:glance][:keystone_auth_host] = "127.0.0.1"
-default[:glance][:keystone_auth_port] = "35357"
+default[:glance][:keystone_service_host] = node[:keystone][:my_ip]
+default[:glance][:keystone_service_port] = node[:keystone][:public_port]
+default[:glance][:keystone_auth_host] = node[:keystone][:my_ip]
+default[:glance][:keystone_auth_port] = node[:keystone][:admin_port]
 default[:glance][:keystone_auth_protocol] = "http"
-default[:glance][:keystone_auth_uri] = "http://127.0.0.1:5000/"
-default[:glance][:keystone_admin_token] = "999888777666"
+default[:glance][:keystone_auth_uri] = node[:keystone][:endpoints]["keystone"][:publicurl]
+default[:glance][:keystone_admin_tenant_name] = "service"
+default[:glance][:keystone_admin_user] = "glance"
+default[:glance][:keystone_admin_password] = node[:keystone][:users]["glance"][:pass]
+
 
 #RBD Store options
 default[:glance][:rbd_store_ceph_conf] = "/etc/ceph/ceph.conf"
@@ -65,16 +70,6 @@ default[:glance][:delayed_delete] = "False"
 default[:glance][:scrub_time] = "43200"
 default[:glance][:scrubber_datadir] = "/var/lib/glance/scrubber"
 
-#Notification System Options
-default[:glance][:notifier_strategy] = "noop"
-default[:glance][:rabbit_host] = "localhost"
-default[:glance][:rabbit_port] = "5672"
-default[:glance][:rabbit_use_ssl] = "False"
-default[:glance][:rabbit_userid] = "guest"
-default[:glance][:rabbit_password] = "guest"
-default[:glance][:rabbit_virtual_host] = "/"
-default[:glance][:rabbit_notification_exchange] = "glance"
-default[:glance][:rabbit_notification_topic] = "glance_notifications"
 
 # Example Attributes for the glance::load_images recipe:
 #

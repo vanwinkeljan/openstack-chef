@@ -1,9 +1,8 @@
 #
-# Cookbook Name:: nova
-# Recipe:: setup
+# Cookbook Name:: glance
+# Attributes:: rabbit
 #
-# Copyright 2010, Opscode, Inc.
-# Copyright 2011, Anso Labs
+# Copyright 2008-2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,21 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+::Chef::Node.send(:include, Opscode::OpenSSL::Password)
 
-include_recipe "apt"
+set_unless[:glance][:rabbit][:password] = secure_password
+default[:glance][:rabbit][:user] = "glance"
+default[:glance][:rabbit][:vhost] = "/glance"
+default[:glance][:rabbit][:use_ssl] = "False"
+default[:glance][:rabbit][:notifier_strategy] = "noop"
+default[:glance][:rabbit][:notification_exchange] = "glance"
+default[:glance][:rabbit][:notification_topic] = "glance_notifications"
 
-execute "nova-manage db sync" do
-  user "nova"
-end
-
-#execute "nova-manage network create public #{node[:nova][:network]}" do
-#  user 'nova'
-#  not_if { File.exists?("/var/lib/nova/setup") }
-#end
-
-#execute "nova-manage floating create #{node[:nova][:floating_range]}" do
-#  user 'nova'
-#  not_if { File.exists?("/var/lib/nova/setup") }
-#end
-
-execute "touch /var/lib/nova/setup"

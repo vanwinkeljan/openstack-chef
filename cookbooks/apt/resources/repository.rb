@@ -5,6 +5,7 @@ attribute :repo_name, :kind_of => String, :name_attribute => true
 attribute :key, :kind_of => String, :default => nil
 attribute :keyserver, :kind_of => String, :default => nil
 attribute :uri, :kind_of => String
+attribute :apt_key_env, :kind_of => Hash, :default => ()
 #whether or not to add the repository as a source repo as well
 attribute :deb_src, :default => false
 attribute :distribution, :kind_of => String

@@ -96,18 +96,18 @@ registry_client_ca_file = <%= node[:glance][:registry_client_ca_file] %>
 # There are three methods of sending notifications, logging (via the
 # log_file directive), rabbit (via a rabbitmq queue) or noop (no
 # notifications sent, the default)
-notifier_strategy = <%= node[:glance][:notifier_strategy] %>
+notifier_strategy = <%= @rabbit_settings[:notifier_strategy] %>
 
 # Configuration options if sending notifications via rabbitmq (these are
 # the defaults)
-rabbit_host = <%= node[:glance][:rabbit_host] %>
-rabbit_port = <%= node[:glance][:rabbit_port] %>
-rabbit_use_ssl = <%= node[:glance][:rabbit_use_ssl] %>
-rabbit_userid = <%= node[:glance][:rabbit_userid] %>
-rabbit_password = <%= node[:glance][:rabbit_password] %>
-rabbit_virtual_host = <%= node[:glance][:rabbit_virtual_host] %>
-rabbit_notification_exchange = <%= node[:glance][:rabbit_notification_exchange] %>
-rabbit_notification_topic = <%= node[:glance][:rabbit_notification_topic] %>
+rabbit_host=<%= @rabbit_settings[:address] %>
+rabbit_port=<%= @rabbit_settings[:port] %>
+rabbit_userid=<%= @rabbit_settings[:user] %>
+rabbit_password=<%= @rabbit_settings[:password] %>
+rabbit_virtual_host=<%= @rabbit_settings[:vhost] %>
+rabbit_notification_exchange = <%= @rabbit_settings[:notification_exchange] %>
+rabbit_notification_topic = <%= @rabbit_settings[:notification_topic] %>
+rabbit_use_ssl = <%= @rabbit_settings[:use_ssl] %>
 
 # ============ Filesystem Store Options ========================
 

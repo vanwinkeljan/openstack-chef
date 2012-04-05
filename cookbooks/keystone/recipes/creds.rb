@@ -4,11 +4,15 @@
 #
 
 node[:keystone][:creds].each do |data|
+
+  user = data[:keystone_user]
+
   creds = {
-    :auth_user => data[:auth_user],
-    :auth_key => data[:auth_key],
-    :auth_tenant => data[:auth_tenant],
-    :auth_url => data[:auth_url]
+    :user => user,
+    :pass => node[:keystone][:users][user][:pass],
+    :tenant => node[:keystone][:users][user][:tenant],
+    :auth_url => node[:keystone][:endpoints]["keystone"][:publicurl],
+    :region => node[:keystone][:endpoints]["keystone"][:region] 
   }
 
   if data[:os_user] == 'root' then

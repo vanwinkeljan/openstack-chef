@@ -21,6 +21,9 @@ use_syslog = <%= node[:keystone][:use_syslog] %>
 connection = <%= @sql_connection %>
 #connection =  <%= node[:keystone][:sql_connection] %>
 idle_timeout = <%= node[:keystone][:sql_idle_timeout] %>
+min_pool_size = 5
+max_pool_size = 10
+pool_timeout = 200
 
 [ldap]
 #url = ldap://localhost

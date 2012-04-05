@@ -17,7 +17,10 @@
 # limitations under the License.
 #
 
+node.default['authorization']['sudo']['include_sudoers_d'] = true
+
 include_recipe "apt"
+include_recipe "sudo"
 
 package "nova-common" do
   options "--force-yes -o Dpkg::Options::=\"--force-confdef\""
@@ -82,6 +85,13 @@ else
   Chef::Log.info("Using local rabbit at #{rabbit[:rabbitmq][:address]}")
 end
 
+template node[:nova][:log_config] do
+  source "logging.cnf.erb"
+  owner "nova"
+  group "nova"
+  mode 0644
+end
+
 rabbit_settings = {
   :address => rabbit[:rabbitmq][:address],
   :port => rabbit[:rabbitmq][:port],
@@ -101,3 +111,14 @@ template "/etc/nova/nova.conf" do
     :extra_config => node[:nova][:extra_config]
   )
 end
+
+include_recipe "nova::setup"
+
+#sudo "nova" do
+#  user "nova"
+#  runas "root"
+#  nopasswd true
+#  commands ["#{node[:nova][:rootwrap]}"]
+#end
+
+

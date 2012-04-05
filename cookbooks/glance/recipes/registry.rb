@@ -51,8 +51,11 @@ paste_vars = {
     :auth_port => node[:glance][:keystone_auth_port],
     :auth_protocol => node[:glance][:keystone_auth_protocol],
     :auth_uri => node[:glance][:keystone_auth_uri],
-    :admin_token => node[:glance][:keystone_admin_token]
+    :admin_tenant_name => node[:glance][:keystone_admin_tenant_name],
+    :admin_user => node[:glance][:keystone_admin_user],
+    :admin_password => node[:glance][:keystone_admin_password]
 }
+
 
 package "glance-registry" do
   action :install
