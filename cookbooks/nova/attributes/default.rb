@@ -50,6 +50,7 @@ default[:nova][:libvirt_type] = "kvm"
 default[:nova][:instance_name_template] = "instance-%08x"
 default[:nova][:api_paste_config] = "/etc/nova/api-paste.ini"
 default[:nova][:image_service] = "nova.image.glance.GlanceImageService"
+default[:nova][:multi_host] = "True"
 
 default[:nova][:ec2_dmz_host] = ipaddress
 
@@ -60,7 +61,7 @@ default[:nova][:osapi_volume_listen_port] = node[:keystone][:nova][:osapi_volume
 
 default[:nova][:force_dhcp_release] = "True"
 default[:nova][:connection_type] = "libvirt"
-default[:nova][:glance_api_servers] = "localhost:9292"
+default[:nova][:glance_api_servers] = "#{node[:glance][:my_ip]}:#{node[:glance][:api_bind_port]}"
 
 
 if node[:nova] and node[:nova][:connection_type]  and node[:nova][:connection_type] == "xenapi"

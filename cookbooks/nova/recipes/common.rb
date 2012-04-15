@@ -85,6 +85,24 @@ else
   Chef::Log.info("Using local rabbit at #{rabbit[:rabbitmq][:address]}")
 end
 
+# Locate glance api servers
+unless Chef::Config[:solo]
+  api_nodes = search(:node, "recipes:glance\\:\\:api")
+  glance_api_servers = []
+
+  api_nodes.each do |api_node|
+    ip = api_node[:glance][:my_ip]
+    port = api_node[:glance][:api_bind_port]
+    glance_api_servers.push("#{ip}:#{port}")
+  end
+
+  Chef::Log.info("Found #{glance_api_servers.count} Glance API server(s)")
+
+  if not glance_api_servers.empty?
+    node.default[:nova][:glance_api_servers] = glance_api_servers.join(",")
+  end
+end
+
 template node[:nova][:log_config] do
   source "logging.cnf.erb"
   owner "nova"

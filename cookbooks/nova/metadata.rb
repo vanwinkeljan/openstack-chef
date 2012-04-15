@@ -12,3 +12,6 @@ depends "openssl"
 depends "postgresql"
 depends "rabbitmq"
 depends "sudo"
+depends "keystone"
+depends "glance"
+

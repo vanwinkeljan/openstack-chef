@@ -104,3 +104,4 @@ service keystone_svc_name do
   action :start
   subscribes :restart, resources(:template => node[:keystone][:config_file])
 end
+

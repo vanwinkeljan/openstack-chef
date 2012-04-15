@@ -39,8 +39,11 @@ default[:keystone][:tenants] = [
   }
 ]
 
+default[:keystone][:horizon][:member] = "Member"
+
 default[:keystone][:roles] = [
-  "admin"
+  "admin",
+  node[:keystone][:horizon][:member]
 ]
 
 default[:keystone][:tenants] = {

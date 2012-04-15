@@ -19,23 +19,6 @@
 
 include_recipe "nova::common"
 
-# Locate glance api servers
-unless Chef::Config[:solo]
-  api_nodes = search(:node, "recipes:glance\\:\\:api")
-  glance_api_servers = []
-
-  api_nodes.each do |api_node|
-    ip = api_node[:glance][:my_ip]
-    port = api_node[:glance][:api_bind_port]
-    glance_api_servers.push("#{ip}:#{port}")
-  end
-
-  Chef::Log.info("Found #{glance_api_servers.count} Glance API server(s)")
-
-  if not glance_api_servers.empty?
-    node.default[:nova][:glance_api_servers] = glance_api_servers.join(",")
-  end
-end
 
 if node[:nova][:auth_strategy] and node[:nova][:auth_strategy] == "keystone" then
   package "python-keystone"
