@@ -1,0 +1,11 @@
+auto lo
+iface lo inet loopback
+
+auto <%= @iface[:name] %>
+iface <%= @iface[:name] %> inet static
+   address <%= @iface[:ip] %>
+   netmask <%= @iface[:netmask] %>
+   broadcast <%= @iface[:broadcast] %>
+   gateway <%= @iface[:gateway] %>
+   bridge_ports <%= @iface[:bridge_ports] %>
+
