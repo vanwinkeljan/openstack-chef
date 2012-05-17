@@ -13,6 +13,10 @@ package "nova-compute" do
   version package_version if package_version
 end
 
+package "guestmount" do
+  action :install
+end
+
 service "nova-compute" do
   if (platform?("ubuntu") && node.platform_version.to_f >= 10.04)
     restart_command "stop nova-compute; start nova-compute"

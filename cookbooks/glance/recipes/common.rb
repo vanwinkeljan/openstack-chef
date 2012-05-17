@@ -24,3 +24,9 @@ end
   end
 
 end
+
+# Init DB seems that latest ubuntu pkgs needed this
+# TODO: Test if this the correct place the init db
+execute "glanc-manage version_control 0"
+execute "glance-manage db_sync"
+

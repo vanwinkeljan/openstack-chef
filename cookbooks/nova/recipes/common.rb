@@ -34,10 +34,7 @@ directory "/etc/nova" do
   action :create
 end
 
-env_filter = ''
-if node[:app_environment]
-  env_filter = " AND app_environment:#{node[:app_environment]}"
-end
+env_filter = " AND chef_environment:#{node.chef_environment}"
 
 sql_connection = nil
 if node[:nova][:mysql]
@@ -87,7 +84,7 @@ end
 
 # Locate glance api servers
 unless Chef::Config[:solo]
-  api_nodes = search(:node, "recipes:glance\\:\\:api")
+  api_nodes = search(:node, "recipes:glance\\:\\:api#{env_filter}")
   glance_api_servers = []
 
   api_nodes.each do |api_node|
@@ -96,7 +93,7 @@ unless Chef::Config[:solo]
     glance_api_servers.push("#{ip}:#{port}")
   end
 
-  Chef::Log.info("Found #{glance_api_servers.count} Glance API server(s)")
+  Chef::Log.info("Found #{glance_api_servers.count} Glance API server(s) [#{glance_api_servers.join(",")}]")
 
   if not glance_api_servers.empty?
     node.default[:nova][:glance_api_servers] = glance_api_servers.join(",")

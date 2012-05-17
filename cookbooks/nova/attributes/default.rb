@@ -36,6 +36,7 @@ default[:nova][:log_file] = "/var/log/nova/nova.log"
 default[:nova][:allow_resize_to_same_host] = "True"
 default[:nova][:compute_scheduler_driver] = "nova.scheduler.filter_scheduler.FilterScheduler"
 default[:nova][:dhcpbridge_flagfile] = "/etc/nova/nova.conf"
+default[:nova][:dhcpbridge] = "/usr/bin/nova-dhcpbridge"
 default[:nova][:fixed_range] = "10.0.0.0/24"
 default[:nova][:network_manager] = "nova.network.manager.FlatDHCPManager"
 default[:nova][:volume_group] = "nova-volumes"
@@ -46,13 +47,17 @@ default[:nova][:osapi_compute_extension] = "nova.api.openstack.compute.contrib.s
 default[:nova][:my_ip] = ipaddress
 default[:nova][:public_interface] = "eth0"
 default[:nova][:vlan_interface] = "eth0"
+default[:nova][:flat_interface] = "eth1"
+default[:nova][:flat_network_bridge] = "privbr"
 default[:nova][:libvirt_type] = "kvm"
 default[:nova][:instance_name_template] = "instance-%08x"
 default[:nova][:api_paste_config] = "/etc/nova/api-paste.ini"
 default[:nova][:image_service] = "nova.image.glance.GlanceImageService"
 default[:nova][:multi_host] = "True"
+default[:nova][:network_host] = ipaddress
 
 default[:nova][:ec2_dmz_host] = ipaddress
+default[:nova][:ec2_host] = ipaddress
 
 default[:nova][:ec2_listen_port] = node[:keystone][:nova][:ec2_listen_port]
 default[:nova][:osapi_compute_listen_port] = node[:keystone][:nova][:osapi_compute_listen_port]
@@ -70,10 +75,16 @@ else
   default[:nova][:firewall_driver]='nova.virt.libvirt.firewall.IptablesFirewallDriver'
 end
 
+#Availibilty Zone Name
+default[:nova][:node_availability_zone] = "nova"
+
 #IP Ranges (allocated via nova-manage)
 
 default[:nova][:floating_range] = "10.128.0.0/24"
 
+#Host providing metta data
+default[:nova][:metadata_host] = ipaddress
+default[:nova][:dmz_cidr] = ipaddress
 
 # File Backe LVM Options
 

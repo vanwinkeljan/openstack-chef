@@ -4,6 +4,8 @@
 #
 #
 
+env_filter = " AND chef_environment:#{node.chef_environment}"
+
 sql_connection = nil
 if node[:keystone][:mysql]
   Chef::Log.info("Using mysql")
@@ -11,7 +13,7 @@ if node[:keystone][:mysql]
   mysqls = nil
 
   unless Chef::Config[:solo]
-    mysqls = search(:node, "recipes:keystone\\:\\:mysql")
+    mysqls = search(:node, "recipes:keystone\\:\\:mysql #{env_filter}")
   end
   if mysqls and mysqls[0]
     mysql = mysqls[0]
@@ -26,7 +28,7 @@ elsif node[:keystone][:postgresql]
   postgresqls = nil
 
   unless Chef::Config[:solo]
-    postgresqls = search(:node, "recipes:keystone\\:\\:postgresql")
+    postgresqls = search(:node, "recipes:keystone\\:\\:postgresql #{env_filter}")
   end
   if postgresqls and postgresqls[0]
     postgresql = postgresqls[0]

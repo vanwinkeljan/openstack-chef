@@ -10,10 +10,7 @@
 include_recipe "apache2"
 include_recipe "apache2::mod_wsgi"
 
-env_filter = ''
-if node[:app_environment]
-  env_filter = " AND app_environment:#{node[:app_environment]}"
-end
+env_filter = " AND chef_environment:#{node.chef_environment}"
 
 # Find the database and extract settings
 db = nil

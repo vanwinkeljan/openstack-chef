@@ -6,11 +6,7 @@
 
 include_recipe "#{@cookbook_name}::common"
 
-env_filter = ''
-if node[:app_environment]
-  env_filter = " AND app_environment:#{node[:app_environment]}"
-end
-
+env_filter = " AND chef_environment:#{node.chef_environment}"
 
 # Locate glance registry and retrieve it's IP
 unless Chef::Config[:solo]
@@ -121,6 +117,7 @@ directory node[:glance][:filesystem_store_datadir] do
   owner "glance"
   group "glance"
   mode "0755"
+  recursive true
   action :create
 end
 
@@ -130,6 +127,7 @@ end
     owner "glance"
     group "glance"
     mode "0755"
+    recursive true
     action :create
   end
 
